@@ -1,0 +1,32 @@
+html.dark {
+  // Btn
+  --ap-btn-disabled: #575757;
+  --ap-btn-gray: #575757;
+  --ap-btn-error: #d5070a;
+  --ap-btn-primary: #0171ff;
+
+  // Background
+  --ap-bg-default: #1a1b25;
+  --ap-bg-surface: #000000;
+
+  // Text
+  --ap-text-primary: #ffffff;
+  --ap-text-secondary: #666d80;
+  --ap-text-tertiary: #666d80;
+  --ap-text-btn: #ffffff;
+
+  // Border
+  --ap-border-default: #36394a;
+
+  // Border Accent
+  --ap-border-accent: #ffffff;
+  --ap-border-accent-primary: #666b80;
+
+  // Tab
+  --ap-tab-not-active: #292a36;
+  --ap-tab-active: #000000;
+
+  // Loading
+  --ap-loading-right: #696969;
+  --ap-loading-left: #000000;
+}

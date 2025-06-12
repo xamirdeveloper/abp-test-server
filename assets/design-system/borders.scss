@@ -1,0 +1,79 @@
+@use './breakpoints.scss' as *;
+
+@mixin ap-border-style($prop, $size) {
+  #{$prop}-width: #{$size}px !important;
+  #{$prop}-style: solid !important;
+}
+
+@mixin ap-border-generator($size, $position) {
+  @if $position == '' {
+    .ap-border-#{$size} {
+      @include ap-border-style('border', $size);
+    }
+
+    @include bp-mini {
+      .ap-border-#{$size}--mini {
+        @include ap-border-style('border', $size);
+      }
+    }
+    @include bp-small {
+      .ap-border-#{$size}--sm {
+        @include ap-border-style('border', $size);
+      }
+    }
+    @include bp-medium {
+      .ap-border-#{$size}--md {
+        @include ap-border-style('border', $size);
+      }
+    }
+  } @else if $position == 'outline' {
+    .ap-outline-#{$size} {
+      @include ap-border-style('outline', $size);
+    }
+
+    @include bp-mini {
+      .ap-outline-#{$size}--mini {
+        @include ap-border-style('outline', $size);
+      }
+    }
+    @include bp-small {
+      .ap-outline-#{$size}--sm {
+        @include ap-border-style('outline', $size);
+      }
+    }
+    @include bp-medium {
+      .ap-outline-#{$size}--md {
+        @include ap-border-style('outline', $size);
+      }
+    }
+  } @else {
+    .ap-border-#{$position}-#{$size} {
+      @include ap-border-style('border-#{$position}', $size);
+    }
+
+    @include bp-mini {
+      .ap-border-#{$position}-#{$size}--mini {
+        @include ap-border-style('border-#{$position}', $size);
+      }
+    }
+    @include bp-small {
+      .ap-border-#{$position}-#{$size}--sm {
+        @include ap-border-style('border-#{$position}', $size);
+      }
+    }
+    @include bp-medium {
+      .ap-border-#{$position}-#{$size}--md {
+        @include ap-border-style('border-#{$position}', $size);
+      }
+    }
+  }
+}
+
+@for $i from 0 through 5 {
+  @include ap-border-generator($i, '');
+  @include ap-border-generator($i, 'top');
+  @include ap-border-generator($i, 'right');
+  @include ap-border-generator($i, 'bottom');
+  @include ap-border-generator($i, 'left');
+  @include ap-border-generator($i, 'outline');
+}

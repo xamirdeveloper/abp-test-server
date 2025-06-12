@@ -1,0 +1,31 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Vazirmatn, sans-serif;
+  font-size: 14px;
+  line-height: 1.7;
+  background-color: var(--ap-bg-default);
+  color: var(--ap-text-primary);
+  direction: rtl;
+  height: 100%;
+}
+
+body {
+  padding-top: env(safe-area-inset-top, 20px);
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  box-sizing: border-box;
+}
+
+#__nuxt {
+  padding-top: env(safe-area-inset-top, 20px);
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  box-sizing: border-box;
+}
+
+// .v-application {
+//   min-height: 100vh;
+//   display: flex;
+//   flex-direction: column;
+//   background-color: var(--ap-bg-default);
+// }

@@ -1,0 +1,76 @@
+@use './breakpoints' as *;
+
+// Font Sizes (10px to 36px)
+$ap-txt-10: 10px;
+$ap-txt-12: 12px;
+$ap-txt-14: 14px;
+$ap-txt-16: 16px;
+$ap-txt-18: 18px;
+$ap-txt-20: 20px;
+$ap-txt-24: 24px;
+$ap-txt-28: 28px;
+$ap-txt-32: 32px;
+$ap-txt-36: 36px;
+
+// Font Weights
+$ap-font-thin: 100;
+$ap-font-light: 300;
+$ap-font-regular: 400;
+$ap-font-medium: 500;
+$ap-font-semibold: 600;
+$ap-font-bold: 700;
+
+// Line Heights
+$ap-lh-16: 16px;
+$ap-lh-20: 20px;
+$ap-lh-24: 24px;
+$ap-lh-28: 28px;
+$ap-lh-32: 32px;
+$ap-lh-36: 36px;
+$ap-lh-40: 40px;
+$ap-lh-44: 44px;
+$ap-lh-48: 48px;
+$ap-lh-56: 56px;
+
+@mixin ap-typo-generator($name, $size, $weight, $lineHeight) {
+  .ap-txt-#{$name} {
+    font-size: $size;
+    font-weight: $weight;
+    line-height: $lineHeight;
+  }
+
+  @include bp-mini {
+    .ap-txt-#{$name}--mini {
+      font-size: $size !important;
+      font-weight: $weight !important;
+      line-height: $lineHeight !important;
+    }
+  }
+
+  @include bp-small {
+    .ap-txt-#{$name}--sm {
+      font-size: $size !important;
+      font-weight: $weight !important;
+      line-height: $lineHeight !important;
+    }
+  }
+
+  @include bp-medium {
+    .ap-txt-#{$name}--md {
+      font-size: $size !important;
+      font-weight: $weight !important;
+      line-height: $lineHeight !important;
+    }
+  }
+}
+
+@include ap-typo-generator('title-1', $ap-txt-36, $ap-font-bold, $ap-lh-48);
+@include ap-typo-generator('title-2', $ap-txt-32, $ap-font-bold, $ap-lh-44);
+@include ap-typo-generator('title-3', $ap-txt-28, $ap-font-bold, $ap-lh-40);
+@include ap-typo-generator('subtitle-1', $ap-txt-24, $ap-font-medium, $ap-lh-36);
+@include ap-typo-generator('subtitle-2', $ap-txt-20, $ap-font-medium, $ap-lh-32);
+@include ap-typo-generator('subtitle-3', $ap-txt-18, $ap-font-medium, $ap-lh-28);
+@include ap-typo-generator('body-1', $ap-txt-16, $ap-font-regular, $ap-lh-24);
+@include ap-typo-generator('body-2', $ap-txt-14, $ap-font-regular, $ap-lh-20);
+@include ap-typo-generator('caption', $ap-txt-12, $ap-font-regular, $ap-lh-16);
+@include ap-typo-generator('caption-2', $ap-txt-10, $ap-font-regular, $ap-lh-16);
