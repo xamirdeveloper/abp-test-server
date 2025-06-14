@@ -19,6 +19,12 @@ export default defineNuxtConfig({
     },
     //...
   ],
+  app: {
+    head: {
+      link: [{ rel: 'manifest', href: '/manifest.webmanifest' }],
+      meta: [{ name: 'theme-color', content: '#2D31FA' }],
+    },
+  },
   pwa: {
     registerType: 'autoUpdate',
     manifest: {
@@ -49,19 +55,21 @@ export default defineNuxtConfig({
         },
       ],
     },
-  },
-  workbox: {
-    cleanupOutdatedCaches: true,
-    runtimeCaching: [
-      {
-        urlPattern: '/*',
-        handler: 'NetworkFirst',
-        options: {
-          cacheName: 'default',
+    workbox: {
+      navigateFallback: '/',
+      cleanupOutdatedCaches: true,
+      runtimeCaching: [
+        {
+          urlPattern: '/*',
+          handler: 'NetworkFirst',
+          options: {
+            cacheName: 'default',
+          },
         },
-      },
-    ],
+      ],
+    },
   },
+
   vite: {
     vue: {
       template: {
