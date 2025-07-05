@@ -4,56 +4,57 @@ import { createVuetify, type ThemeDefinition } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import 'vuetify/styles';
+import { fa } from 'vuetify/locale';
 
 const ApLightTheme: ThemeDefinition = {
   dark: false,
   colors: {
-    background: 'var(--ap-bg-default)',
-    surface: 'var(--ap-bg-surface)',
-    primary: 'var(--ap-btn-primary)',
-    'primary-darken-1': 'var(--ap-primary-300)',
+    background: '#f8fafb',
+    surface: '#ffffff',
+    primary: '#2d31fa',
+    'primary-darken-1': '#6b39f4',
 
-    secondary: 'var(--ap-text-secondary)',
-    'secondary-darken-1': 'var(--ap-grey-600)',
+    secondary: '#666d80',
+    'secondary-darken-1': '#353849',
 
-    error: 'var(--ap-btn-error)',
-    info: 'var(--ap-sky-100)',
-    success: 'var(--ap-success-300)',
-    warning: 'var(--ap-warning-100)',
+    error: '#f10b0f',
+    info: '#33cfff',
+    success: '#67e296',
+    warning: '#ffbd4c',
 
-    onBackground: 'var(--ap-grey-900)',
-    onSurface: 'var(--ap-grey-800)',
-    onPrimary: 'var(--ap-grey-0)',
-    onSecondary: 'var(--ap-grey-0)',
-    onError: 'var(--ap-grey-0)',
-    onSuccess: 'var(--ap-grey-0)',
-    onWarning: 'var(--ap-grey-900)',
+    onBackground: '#0d0d12',
+    onSurface: '#1a1a25',
+    onPrimary: '#f9f9fb',
+    onSecondary: '#f9f9fb',
+    onError: '#f9f9fb',
+    onSuccess: '#f9f9fb',
+    onWarning: '#0d0d12',
   },
 };
 
 const ApDarkTheme: ThemeDefinition = {
   dark: true,
   colors: {
-    background: 'var(--ap-bg-default)',
-    surface: 'var(--ap-bg-surface)',
-    primary: 'var(--ap-btn-primary)',
-    'primary-darken-1': 'var(--ap-primary-300)',
+    background: '#1a1b25',
+    surface: '#000000',
+    primary: '#0171ff',
+    'primary-darken-1': '#6b39f4',
 
-    secondary: 'var(--ap-text-secondary)',
-    'secondary-darken-1': 'var(--ap-grey-600)',
+    secondary: '#666d80',
+    'secondary-darken-1': '#353849',
 
-    error: 'var(--ap-btn-error)',
-    info: 'var(--ap-sky-100)',
-    success: 'var(--ap-success-300)',
-    warning: 'var(--ap-warning-100)',
+    error: '#d5070a',
+    info: '#33cfff',
+    success: '#67e296',
+    warning: '#ffbd4c',
 
-    onBackground: 'var(--ap-grey-900)',
-    onSurface: 'var(--ap-grey-800)',
-    onPrimary: 'var(--ap-grey-0)',
-    onSecondary: 'var(--ap-grey-0)',
-    onError: 'var(--ap-grey-0)',
-    onSuccess: 'var(--ap-grey-0)',
-    onWarning: 'var(--ap-grey-900)',
+    onBackground: '#f9f9fb',
+    onSurface: '#eceff3',
+    onPrimary: '#f9f9fb',
+    onSecondary: '#f9f9fb',
+    onError: '#f9f9fb',
+    onSuccess: '#f9f9fb',
+    onWarning: '#0d0d12',
   },
 };
 
@@ -61,6 +62,12 @@ export default defineNuxtPlugin((nuxtApp) => {
   const vuetify = createVuetify({
     components,
     directives,
+    locale: {
+      rtl: {
+        fa: true,
+      },
+      locale: 'fa',
+    },
     theme: {
       defaultTheme: 'light',
       themes: {

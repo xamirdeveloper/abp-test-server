@@ -1,0 +1,24 @@
+.vpd-input-group input {
+  display: flex;
+  align-items: center;
+  background-color: var(--ap-bg-default);
+  border: 1px solid var(--ap-border-default) !important;
+  border-radius: 12px !important;
+  padding: 8px 12px;
+  transition: border-color 0.07s ease;
+  height: 48px;
+}
+
+.vpd-icon-btn {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: fit-content !important;
+  height: fit-content !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 !important;
+  color: black !important;
+}

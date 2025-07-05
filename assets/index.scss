@@ -3,8 +3,12 @@
 @use '/assets/design-system/colors-dark.scss' as *;
 @use '/assets/design-system/breakpoints.scss' as *;
 @use '/assets/design-system/typography.scss' as *;
-@use '/assets//utils/color-classes.scss' as *;
 @use '/assets/design-system/borders.scss' as *;
 @use '/assets/design-system/radius.scss' as *;
-@use './global.scss' as *;
+@use '/assets/design-system/otp.scss' as *;
+@use '/assets/design-system/checkbox.scss' as *;
+@use '/assets/design-system/radio.scss' as *;
+@use '/assets/design-system/datepicker.scss' as *;
+@use '/assets/design-system/upload-file.scss' as *;
+@use '/assets//utils/color-classes.scss' as *;
 @import '/assets/fonts/font.css';

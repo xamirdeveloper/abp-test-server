@@ -1,6 +1,5 @@
 @use './breakpoints' as *;
 
-// Font Sizes (10px to 36px)
 $ap-txt-10: 10px;
 $ap-txt-12: 12px;
 $ap-txt-14: 14px;
@@ -10,17 +9,17 @@ $ap-txt-20: 20px;
 $ap-txt-24: 24px;
 $ap-txt-28: 28px;
 $ap-txt-32: 32px;
-$ap-txt-36: 36px;
 
-// Font Weights
 $ap-font-thin: 100;
+$ap-font-extralight: 200;
 $ap-font-light: 300;
 $ap-font-regular: 400;
 $ap-font-medium: 500;
 $ap-font-semibold: 600;
 $ap-font-bold: 700;
+$ap-font-extrabold: 800;
+$ap-font-black: 900;
 
-// Line Heights
 $ap-lh-16: 16px;
 $ap-lh-20: 20px;
 $ap-lh-24: 24px;
@@ -37,6 +36,7 @@ $ap-lh-56: 56px;
     font-size: $size;
     font-weight: $weight;
     line-height: $lineHeight;
+    letter-spacing: 0;
   }
 
   @include bp-mini {
@@ -44,6 +44,7 @@ $ap-lh-56: 56px;
       font-size: $size !important;
       font-weight: $weight !important;
       line-height: $lineHeight !important;
+      letter-spacing: 0;
     }
   }
 
@@ -52,6 +53,7 @@ $ap-lh-56: 56px;
       font-size: $size !important;
       font-weight: $weight !important;
       line-height: $lineHeight !important;
+      letter-spacing: 0;
     }
   }
 
@@ -60,17 +62,60 @@ $ap-lh-56: 56px;
       font-size: $size !important;
       font-weight: $weight !important;
       line-height: $lineHeight !important;
+      letter-spacing: 0;
     }
   }
 }
 
-@include ap-typo-generator('title-1', $ap-txt-36, $ap-font-bold, $ap-lh-48);
-@include ap-typo-generator('title-2', $ap-txt-32, $ap-font-bold, $ap-lh-44);
-@include ap-typo-generator('title-3', $ap-txt-28, $ap-font-bold, $ap-lh-40);
-@include ap-typo-generator('subtitle-1', $ap-txt-24, $ap-font-medium, $ap-lh-36);
-@include ap-typo-generator('subtitle-2', $ap-txt-20, $ap-font-medium, $ap-lh-32);
-@include ap-typo-generator('subtitle-3', $ap-txt-18, $ap-font-medium, $ap-lh-28);
-@include ap-typo-generator('body-1', $ap-txt-16, $ap-font-regular, $ap-lh-24);
+@include ap-typo-generator('title-1', $ap-txt-24, $ap-font-semibold, $ap-lh-36);
+@include ap-typo-generator('title-2', $ap-txt-20, $ap-font-extrabold, $ap-lh-32);
+@include ap-typo-generator('title-3', $ap-txt-18, $ap-font-semibold, $ap-lh-28);
+@include ap-typo-generator('title-4', $ap-txt-16, $ap-font-semibold, $ap-lh-24);
+@include ap-typo-generator('title-5', $ap-txt-14, $ap-font-semibold, $ap-lh-20);
+
+@include ap-typo-generator('subtitle', $ap-txt-16, $ap-font-regular, $ap-lh-24);
+@include ap-typo-generator('label', $ap-txt-14, $ap-font-regular, $ap-lh-20);
+@include ap-typo-generator('placeholder', $ap-txt-16, $ap-font-regular, $ap-lh-24);
+@include ap-typo-generator('button', $ap-txt-16, $ap-font-semibold, $ap-lh-24);
+@include ap-typo-generator('link', $ap-txt-14, $ap-font-regular, $ap-lh-20);
+
+@include ap-typo-generator('hint', $ap-txt-12, $ap-font-regular, $ap-lh-16);
+@include ap-typo-generator('tab', $ap-txt-12, $ap-font-regular, $ap-lh-16);
 @include ap-typo-generator('body-2', $ap-txt-14, $ap-font-regular, $ap-lh-20);
+@include ap-typo-generator('body-1', $ap-txt-16, $ap-font-regular, $ap-lh-24);
+@include ap-typo-generator('menu', $ap-txt-14, $ap-font-medium, $ap-lh-20);
+
 @include ap-typo-generator('caption', $ap-txt-12, $ap-font-regular, $ap-lh-16);
-@include ap-typo-generator('caption-2', $ap-txt-10, $ap-font-regular, $ap-lh-16);
+@include ap-typo-generator('overline', $ap-txt-10, $ap-font-regular, $ap-lh-16);
+
+@mixin ap-text-size-generator($name, $size) {
+  .ap-txt-#{$name} {
+    font-size: $size;
+  }
+}
+
+@include ap-text-size-generator('10', $ap-txt-10);
+@include ap-text-size-generator('12', $ap-txt-12);
+@include ap-text-size-generator('14', $ap-txt-14);
+@include ap-text-size-generator('16', $ap-txt-16);
+@include ap-text-size-generator('18', $ap-txt-18);
+@include ap-text-size-generator('20', $ap-txt-20);
+@include ap-text-size-generator('24', $ap-txt-24);
+@include ap-text-size-generator('28', $ap-txt-28);
+@include ap-text-size-generator('32', $ap-txt-32);
+
+@mixin ap-text-weight-generator($name, $weight) {
+  .ap-fw-#{$name} {
+    font-weight: $weight;
+  }
+}
+
+@include ap-text-weight-generator('thin', $ap-font-thin);
+@include ap-text-weight-generator('extralight', $ap-font-extralight);
+@include ap-text-weight-generator('light', $ap-font-light);
+@include ap-text-weight-generator('regular', $ap-font-regular);
+@include ap-text-weight-generator('medium', $ap-font-medium);
+@include ap-text-weight-generator('semibold', $ap-font-semibold);
+@include ap-text-weight-generator('bold', $ap-font-bold);
+@include ap-text-weight-generator('extrabold', $ap-font-extrabold);
+@include ap-text-weight-generator('black', $ap-font-black);
