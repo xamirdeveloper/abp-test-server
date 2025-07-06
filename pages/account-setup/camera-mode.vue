@@ -134,14 +134,9 @@
 
     &__video {
       width: 100%;
-      border-radius: 12px;
+      height: 100%;
       z-index: 999;
-    }
-
-    &__preview img {
-      width: 100%;
-      border-radius: 12px;
-      z-index: 999;
+      flex-shrink: 0;
     }
   }
 </style>
