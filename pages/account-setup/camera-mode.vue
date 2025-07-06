@@ -133,10 +133,9 @@
     transform: translateY(-50%);
 
     &__video {
-      width: 100%;
-      height: 100%;
+      width: 100% !important;
+      height: 100% !important;
       z-index: 999;
-      flex-shrink: 0;
     }
   }
 </style>
