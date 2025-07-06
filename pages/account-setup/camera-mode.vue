@@ -135,11 +135,13 @@
     &__video {
       width: 100%;
       border-radius: 12px;
+      z-index: 999;
     }
 
     &__preview img {
       width: 100%;
       border-radius: 12px;
+      z-index: 999;
     }
   }
 </style>
