@@ -1,0 +1,32 @@
+.ap-checkbox {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    display: none;
+  }
+
+  &__custom {
+    width: 20px;
+    height: 20px;
+    border: 1px solid var(--ap-border-default, #dfe1e7);
+    border-radius: 4px;
+    background-color: var(--ap-bg-surface);
+    transition: all 0.1s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &--checked &__custom {
+    background-color: #4cd964;
+    border-color: #4cd964;
+  }
+
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}

@@ -1,0 +1,35 @@
+$radius-sizes: (
+  0: 0,
+  4: 4px,
+  8: 8px,
+  12: 12px,
+  16: 16px,
+  24: 24px,
+  full: 9999px,
+);
+
+@each $name, $value in $radius-sizes {
+  .ap-radius-#{$name} {
+    border-radius: #{$value} !important;
+  }
+
+  .ap-radius-top-#{$name} {
+    border-top-left-radius: #{$value} !important;
+    border-top-right-radius: #{$value} !important;
+  }
+
+  .ap-radius-bottom-#{$name} {
+    border-bottom-left-radius: #{$value} !important;
+    border-bottom-right-radius: #{$value} !important;
+  }
+
+  .ap-radius-left-#{$name} {
+    border-top-left-radius: #{$value} !important;
+    border-bottom-left-radius: #{$value} !important;
+  }
+
+  .ap-radius-right-#{$name} {
+    border-top-right-radius: #{$value} !important;
+    border-bottom-right-radius: #{$value} !important;
+  }
+}

@@ -1,0 +1,33 @@
+.v-otp-input {
+  padding: 0 !important;
+
+  &__content {
+    padding: 0 2px 0 2px !important;
+    height: 48px !important;
+    gap: 12px !important;
+  }
+
+  &__field {
+    color: var(--ap-text-secondary) !important;
+    font-size: 16px !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+  }
+}
+
+.v-otp-input .v-field {
+  border-radius: 12px;
+  border: 1px solid var(--ap-border-default);
+  transition: all 0.08s ease;
+
+  &--focused {
+    background: var(--ap-bg-default);
+    box-shadow:
+      0px 0px 0px 1px #74b6ff inset,
+      0px 0px 1px 3px rgba(40, 142, 255, 0.15);
+
+    .v-otp-input__field {
+      color: var(--ap-text-primary) !important;
+    }
+  }
+}
