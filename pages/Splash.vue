@@ -13,25 +13,18 @@
 
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
-  import { useTheme } from 'vuetify';
   import { useAuthStore } from '@/stores/auth';
   import { useLanguageStore } from '@/stores/language';
-  import { useThemeStore } from '@/stores/theme';
   import { useSplashStore } from '@/stores/splash';
 
   const router = useRouter();
-  const vuetifyTheme = useTheme();
   const authStore = useAuthStore();
   const languageStore = useLanguageStore();
-  const themeStore = useThemeStore();
   const splashStore = useSplashStore();
 
   onMounted(() => {
     const lang = localStorage.getItem('lang') || 'fa';
     languageStore.setLang(lang);
-
-    themeStore.initTheme();
-    vuetifyTheme.global.name.value = themeStore.theme;
   });
 
   const handleSplashEnd = () => {

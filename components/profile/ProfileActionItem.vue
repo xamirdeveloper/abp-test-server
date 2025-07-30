@@ -13,8 +13,8 @@
         <div
           v-if="hasIcon"
           :class="[
-            'ap-border-1 ap-border-accent-primary ap-radius-full icon-wrapper me-3',
-            error ? 'ap-border-error-50' : 'ap-border-accent-primary',
+            'ap-border-1 ap-radius-full icon-wrapper me-3',
+            error ? 'ap-border-error' : 'ap-border-accent-primary',
           ]"
         >
           <slot name="icon" v-if="$slots.icon" />
@@ -86,5 +86,9 @@
 
   .title[is-error='true'] {
     color: var(--ap-btn-error) !important;
+  }
+
+  .ap-border-error {
+    border: 1px solid rgba(223, 28, 65, 0.3) !important;
   }
 </style>

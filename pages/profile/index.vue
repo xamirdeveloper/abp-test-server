@@ -14,21 +14,21 @@
         @click="item.onClick?.()"
         class="mb-4"
       />
-      <profile-action-item title="حالت روز" :chevron="false" class="mb-4">
-        <template #icon>
-          <icon-brush width="20" height="20" />
-        </template>
-
-        <template #append>
-          <v-switch
-            v-model="isLight"
-            color="var(--ap-btn-primary)"
-            hide-details
-            inset
-            density="compact"
-          />
-        </template>
-      </profile-action-item>
+      <div class="d-flex justify-space-between align-center switch-wrapper px-0 w-100 mb-4">
+        <div class="d-flex align-center">
+          <div class="ap-border-1 ap-border-accent-primary ap-radius-full icon-wrapper me-3">
+            <icon-brush width="20" height="20" />
+          </div>
+          <span class="ap-txt-subtitle ap-text-primary title">حالت روز</span>
+        </div>
+        <v-switch
+          v-model="isLight"
+          color="var(--ap-btn-primary)"
+          hide-details
+          inset
+          density="compact"
+        />
+      </div>
       <profile-action-item title="خروج" :error="true">
         <template #icon>
           <icon-error width="20" height="20" stroke="var(--ap-btn-error)" />
@@ -38,7 +38,12 @@
   </div>
   <app-version class="profile__app-version" />
   <base-bottom-sheet v-model="isSettingsModalOpen">
-    <v-btn variant="text" height="40" class="d-flex justify-start w-100 pa-1 mb-4" @click="router.push('profile/change-password')">
+    <v-btn
+      variant="text"
+      height="40"
+      class="d-flex justify-start w-100 pa-1 mb-4"
+      @click="router.push('profile/change-password')"
+    >
       <icon-lock width="24" height="24" class="me-2" />
       <span class="ap-txt-title-4">تغییر رمز عبور</span>
     </v-btn>
@@ -133,5 +138,17 @@
     &__app-version {
       bottom: 90px;
     }
+  }
+
+  .switch-wrapper{
+    height: 40px;
+  }
+
+  .icon-wrapper {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>

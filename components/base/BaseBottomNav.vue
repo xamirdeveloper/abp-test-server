@@ -1,28 +1,30 @@
 <template>
   <v-bottom-navigation class="ap-bottom-nav" height="69" tag="footer" :elevation="2">
-    <v-btn
-      v-for="item in items"
-      :key="item.to as any"
-      variant="text"
-      class="ap-bottom-nav__btn"
-      :ripple="true"
-      @click="go(item.to)"
-    >
-      <span class="ap-bottom-nav__icon">
-        <component
-          :is="isActive(item.to) ? item.activeIcon || item.icon : item.icon"
-          width="24"
-          height="24"
-          :stroke="isActive(item.to) ? 'var(--ap-btn-primary)' : 'var(--ap-btn-disabled)'"
-        />
-      </span>
-      <span
-        class="ap-bottom-nav__label"
-        :class="{ 'ap-bottom-nav__label--active': isActive(item.to) }"
+    <div class="ap-bottom-nav__container">
+      <v-btn
+        v-for="item in items"
+        :key="item.to as any"
+        variant="text"
+        class="ap-bottom-nav__btn"
+        :ripple="true"
+        @click="go(item.to)"
       >
-        {{ item.label }}
-      </span>
-    </v-btn>
+        <span class="ap-bottom-nav__icon">
+          <component
+            :is="isActive(item.to) ? item.activeIcon || item.icon : item.icon"
+            width="24"
+            height="24"
+            :stroke="isActive(item.to) ? 'var(--ap-btn-primary)' : 'var(--ap-btn-disabled)'"
+          />
+        </span>
+        <span
+          class="ap-bottom-nav__label"
+          :class="{ 'ap-bottom-nav__label--active': isActive(item.to) }"
+        >
+          {{ item.label }}
+        </span>
+      </v-btn>
+    </div>
   </v-bottom-navigation>
 </template>
 
@@ -76,11 +78,20 @@
     justify-content: center;
     align-items: center;
 
+    &__container {
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+
     &__btn {
       display: flex;
       flex-direction: column;
-      min-width: 0 !important;
-      width: 67px !important;
+      min-width: 18% !important;
+      width: 18% !important;
+      max-width: 20%;
       height: 85% !important;
       padding: 8px;
       border-radius: 10px !important;
@@ -103,5 +114,10 @@
         color: var(--ap-btn-primary);
       }
     }
+  }
+</style>
+<style>
+  .ap-bottom-nav .v-bottom-navigation__content {
+    height: 100%;
   }
 </style>

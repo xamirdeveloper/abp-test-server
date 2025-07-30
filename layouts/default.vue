@@ -5,31 +5,25 @@
 </template>
 
 <script setup lang="ts">
-import { useThemeStore } from '@/stores/theme'
-import { useTheme } from 'vuetify'
+  import { useTheme } from 'vuetify';
+  import { useThemeStore } from '@/stores/theme';
 
-const themeStore = useThemeStore()
-const vuetifyTheme = useTheme()
+  const theme = useTheme();
+  const themeStore = useThemeStore();
 
-onMounted(() => {
-  themeStore.initTheme()
-  vuetifyTheme.global.name.value = themeStore.theme
-})
+  onMounted(() => {
+    theme.global.name.value = themeStore.theme;
 
-watch(
-  () => themeStore.theme,
-  (val) => {
-    vuetifyTheme.global.name.value = val
-  }
-)
+    document.documentElement.classList.remove('theme-light', 'theme-dark');
+    document.documentElement.classList.add(`theme-${themeStore.theme}`);
+  });
 
-window.addEventListener('storage', (event) => {
-  if (event.key === 'theme') {
-    const newTheme = event.newValue as 'light' | 'dark'
-    if (newTheme && newTheme !== themeStore.theme) {
-      themeStore.setTheme(newTheme)
+  watch(
+    () => themeStore.theme,
+    (newVal) => {
+      theme.global.name.value = newVal;
+      document.documentElement.classList.remove('theme-light', 'theme-dark');
+      document.documentElement.classList.add(`theme-${newVal}`);
     }
-  }
-})
-
+  );
 </script>

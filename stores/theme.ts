@@ -1,25 +1,31 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
+
+type Theme = 'light' | 'dark';
+type ThemeSource = 'system' | 'user';
 
 export const useThemeStore = defineStore('theme', {
   state: () => ({
-    theme: (localStorage.getItem('theme') as 'light' | 'dark') || 'light',
+    theme: 'light' as Theme,
+    source: 'system' as ThemeSource,
   }),
 
   actions: {
-    setTheme(mode: 'light' | 'dark') {
-      this.theme = mode
-      localStorage.setItem('theme', mode)
-    },
-
-    toggleTheme() {
-      const next = this.theme === 'dark' ? 'light' : 'dark'
-      this.setTheme(next)
+    setTheme(theme: Theme, source: ThemeSource = 'user') {
+      this.theme = theme;
+      this.source = source;
+      localStorage.setItem('theme', theme);
+      localStorage.setItem('theme-source', source);
     },
 
     initTheme() {
-      const saved = localStorage.getItem('theme') as 'light' | 'dark' | null
-      const system = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-      this.setTheme(saved || system)
+      const savedTheme = localStorage.getItem('theme') as Theme | null;
+      const savedSource = localStorage.getItem('theme-source') as ThemeSource | null;
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      const source = savedSource || 'system';
+
+      this.setTheme(theme, source);
     },
   },
-})
+});

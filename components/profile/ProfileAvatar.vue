@@ -10,7 +10,7 @@
         class="ap-btn-primary avatar__file-btn"
         @click="isProfileAvatarModalOpen = true"
       >
-        <icon-gallery width="16" height="16" stroke="var(--ap-bg-surface)" />
+        <icon-gallery width="16" height="16" stroke="var(--ap-text-btn)" />
       </v-btn>
     </div>
     <p v-if="title" class="ap-txt-title-2 ap-text-primary mb-1">{{ title }}</p>
@@ -24,21 +24,14 @@
     </div>
     <v-btn
       variant="text"
-      class="d-flex justify-start pa-3 mb-4"
+      class="d-flex justify-start pa-3 mb-4 w-100"
       color="var(--ap-btn-primary)"
       @click="triggerFile"
     >
       <icon-gallery width="24" height="24" stroke="var(--ap-btn-primary)" class="me-3" />
       <span class="ap-txt-title-5">انتخاب از گالری</span>
     </v-btn>
-    <input
-      ref="fileInput"
-      type="file"
-      accept="image/*"
-      capture="environment"
-      class="hidden"
-      @change="handleFileChange"
-    />
+    <input ref="fileInput" type="file" accept="image/*" class="hidden" @change="handleFileChange" />
   </base-bottom-sheet>
 </template>
 
