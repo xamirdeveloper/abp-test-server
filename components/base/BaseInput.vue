@@ -11,12 +11,14 @@
 
       <input
         :id="id"
+        :type="inputType"
         :inputmode="type === 'number' ? 'numeric' : undefined"
         :placeholder="placeholder"
         :disabled="disabled"
+        :readonly="readonly"
         :value="displayValue"
-        type="text"
         autocomplete="off"
+        :maxlength="maxlength"
         @keypress="handleKeyPress"
         @focus="isFocused = true"
         @blur="isFocused = false"
@@ -29,7 +31,7 @@
       </span>
     </div>
 
-    <p v-if="error" class="ap-input__error">
+    <p :class="['ap-input__error', { 'ap-input__error--visible': !!error }]">
       {{ error }}
     </p>
   </div>
@@ -40,10 +42,12 @@
     modelValue: string | number | undefined;
     label?: string;
     placeholder?: string;
-    type?: 'text' | 'number';
+    type?: 'text' | 'number' | 'password';
     id?: string;
     disabled?: boolean;
     error?: string;
+    maxlength?: number;
+    readonly?: boolean
   }
 
   const props = withDefaults(defineProps<InputProps>(), {
@@ -61,6 +65,11 @@
 
   const isFocused = ref<boolean>(false);
   const internalValue = ref<string>(String(props.modelValue ?? ''));
+
+  const inputType = computed(() => {
+    if (props.type === 'password') return 'password';
+    return 'text';
+  });
 
   watch(
     () => props.modelValue,

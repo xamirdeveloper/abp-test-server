@@ -16,14 +16,14 @@
           icon
           @click.stop="removeImage"
         >
-          <icon-trash width="32" height="32" />
+          <icon-trash width="32" height="32" stroke="var(--ap-text-btn)" />
         </v-btn>
       </div>
     </div>
-    <img src="@/assets/images/corner.png" width="260" height="167" class="corner top-left" />
-    <img src="@/assets/images/corner.png" width="260" height="167" class="corner top-right" />
-    <img src="@/assets/images/corner.png" width="260" height="167" class="corner bottom-left" />
-    <img src="@/assets/images/corner.png" width="260" height="167" class="corner bottom-right" />
+    <img src="@/assets/images/corner.svg" class="corner top-left" />
+    <img src="@/assets/images/corner.svg" class="corner top-right" />
+    <img src="@/assets/images/corner.svg" class="corner bottom-left" />
+    <img src="@/assets/images/corner.svg" class="corner bottom-right" />
 
     <input
       ref="fileInput"

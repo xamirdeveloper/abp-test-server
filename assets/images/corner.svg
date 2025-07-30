@@ -1,0 +1,27 @@
+<svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="50" height="50">
+	<title>Vector 4</title>
+	<defs>
+		<clipPath clipPathUnits="userSpaceOnUse" id="cp1">
+			<path d="m-273-281h311c17.67 0 32 14.33 32 32v748c0 17.67-14.33 32-32 32h-311c-17.67 0-32-14.33-32-32v-748c0-17.67 14.33-32 32-32z"/>
+		</clipPath>
+		<clipPath clipPathUnits="userSpaceOnUse" id="cp2">
+			<path d="m-285 20c0-11.05 8.95-20 20-20h295c11.05 0 20 8.95 20 20v210c0 11.05-8.95 20-20 20h-295c-11.05 0-20-8.95-20-20z"/>
+		</clipPath>
+	</defs>
+	<style>
+		.s0 { fill: none;stroke: #2d31fa;stroke-width: 10 } 
+	</style>
+	<g id="Ø§Ø³Ú©Ù">
+		<g id="Clip-Path" clip-path="url(#cp1)">
+			<g>
+				<g id="id">
+					<g id="Clip-Path" clip-path="url(#cp2)">
+						<g>
+							<path id="Vector 4" class="s0" d="m0 0h30c11 0 20 9 20 20v30"/>
+						</g>
+					</g>
+				</g>
+			</g>
+		</g>
+	</g>
+</svg>

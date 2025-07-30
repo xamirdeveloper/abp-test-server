@@ -8,6 +8,7 @@ body {
   background-color: var(--ap-bg-default);
   color: var(--ap-text-primary);
   direction: rtl;
+  scroll-behavior: smooth !important;
 }
 
 body {
@@ -44,5 +45,5 @@ textarea:focus {
 }
 
 .v-bottom-sheet > .v-bottom-sheet__content.v-overlay__content {
-  border-radius: 24px !important;
+  border-radius: 33px !important;
 }

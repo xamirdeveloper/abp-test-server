@@ -27,7 +27,7 @@
         alt="idcard"
         class="idcard-img"
       />
-      <span class="serial-text ap-bg-grey-100 px-2">شماره سریال</span>
+      <span class="serial-text ap-bg-surface px-2">شماره سریال</span>
     </div>
   </div>
   <fixed-action-btn title="تایید" />

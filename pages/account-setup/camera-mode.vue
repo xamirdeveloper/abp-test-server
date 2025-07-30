@@ -2,8 +2,8 @@
   <div class="camera-mode">
     <page-header
       class="pt-3"
-      title="کارت ملی"
-      subtitle="لطفا تصاویر جلو و پشت کارت ملی خود را بارگذاری کنید."
+      :title="cameraStore.title"
+      :subtitle="cameraStore.subtitle"
       :show-back="true"
       :is-light="true"
     />
@@ -18,33 +18,28 @@
           class="ap-upload-card__video"
         ></video>
 
-        <div v-else class="ap-upload-card__preview">
+        <!-- <div v-else class="ap-upload-card__preview">
           <img :src="capturedImage" alt="captured image" />
-        </div>
+        </div> -->
 
-        <img src="@/assets/images/corner.png" width="260" height="167" class="corner top-left" />
-        <img src="@/assets/images/corner.png" width="260" height="167" class="corner top-right" />
-        <img src="@/assets/images/corner.png" width="260" height="167" class="corner bottom-left" />
-        <img
-          src="@/assets/images/corner.png"
-          width="260"
-          height="167"
-          class="corner bottom-right"
-        />
+        <img src="@/assets/images/corner.svg" class="corner top-left" />
+        <img src="@/assets/images/corner.svg" class="corner top-right" />
+        <img src="@/assets/images/corner.svg" class="corner bottom-left" />
+        <img src="@/assets/images/corner.svg" class="corner bottom-right" />
       </div>
     </div>
 
     <div class="d-flex justify-space-between align-center camera-mode__buttons">
-      <v-btn icon width="52" height="52" class="bg-black">
-        <icon-flash width="24" height="24" />
+      <v-btn icon width="52" height="52" class="ap-bg-opposite">
+        <icon-flash width="24" height="24" stroke="var(--ap-bg-surface)" />
       </v-btn>
 
       <div class="ap-radius-full ap-border-2 ap-border-accent camera-mode__snapshot">
-        <v-btn icon width="60" height="60" @click="captureImage"></v-btn>
+        <v-btn icon width="60" height="60" class="bg-white" @click="captureImage"></v-btn>
       </div>
 
-      <v-btn icon width="52" height="52" class="bg-black" @click="openGallery">
-        <icon-gallery width="20" height="20" />
+      <v-btn icon width="52" height="52" class="ap-bg-opposite" @click="openGallery">
+        <icon-gallery width="20" height="20" stroke="var(--ap-bg-surface)" />
       </v-btn>
     </div>
 
@@ -53,11 +48,17 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, onBeforeUnmount } from 'vue';
+  import { useRouter } from 'vue-router';
+  import { useUploadStore } from '@/stores/upload';
+  import { useCameraStore } from '@/stores/camera';
 
   const video = ref<HTMLVideoElement | null>(null);
   const fileInput = ref<HTMLInputElement | null>(null);
   const capturedImage = ref<string | null>(null);
+
+  const router = useRouter();
+  const uploadStore = useUploadStore();
+  const cameraStore = useCameraStore();
 
   let stream: MediaStream | null = null;
 
@@ -73,13 +74,16 @@
   };
 
   const captureImage = () => {
-    if (!video.value) return;
+    if (!video.value || !cameraStore.key) return;
     const canvas = document.createElement('canvas');
     canvas.width = video.value.videoWidth;
     canvas.height = video.value.videoHeight;
     const ctx = canvas.getContext('2d');
     ctx?.drawImage(video.value, 0, 0, canvas.width, canvas.height);
-    capturedImage.value = canvas.toDataURL('image/png');
+    const dataUrl = canvas.toDataURL('image/png');
+    uploadStore.setFile(cameraStore.key, dataUrl);
+    cameraStore.clear();
+    router.back();
   };
 
   const openGallery = () => {
@@ -89,8 +93,14 @@
   const handleFileChange = (e: Event) => {
     const target = e.target as HTMLInputElement;
     const file = target.files?.[0];
-    if (file) {
-      capturedImage.value = URL.createObjectURL(file);
+    if (file && cameraStore.key) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        uploadStore.setFile(cameraStore.key!, ev.target?.result as string);
+        cameraStore.clear();
+        router.back();
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -133,9 +143,9 @@
     transform: translateY(-50%);
 
     &__video {
-      width: 100% !important;
-      height: 100% !important;
-      z-index: 999;
+      width: 100%;
+      border-radius: 12px;
+      position: absolute;
     }
   }
 </style>
