@@ -132,6 +132,7 @@
     height: calc(100vh - 220px);
     overflow-y: auto;
     scroll-behavior: smooth;
+    margin-bottom: 48px;
   }
 
   .profile {
