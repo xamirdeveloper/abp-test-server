@@ -108,7 +108,7 @@
       white-space: nowrap;
       letter-spacing: normal;
       word-break: keep-all;
-       &--active {
+      &--active {
         color: var(--ap-btn-primary);
       }
     }
