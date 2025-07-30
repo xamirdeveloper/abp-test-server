@@ -40,23 +40,15 @@
     activeIcon?: Component;
   }
 
-  const props = defineProps<{
-    items: BottomNavItem[];
-  }>();
+  const props = defineProps<{ items: BottomNavItem[] }>();
 
   const route = useRoute();
   const router = useRouter();
 
   const isActive = (to: any) => {
-    if (typeof to === 'string') {
-      return route.path === to;
-    }
-    if ('name' in to && to.name) {
-      return route.name === to.name;
-    }
-    if ('path' in to && to.path) {
-      return route.path === to.path;
-    }
+    if (typeof to === 'string') return route.path === to;
+    if ('name' in to && to.name) return route.name === to.name;
+    if ('path' in to && to.path) return route.path === to.path;
     return false;
   };
 
@@ -80,21 +72,25 @@
 
     &__container {
       display: flex;
-      justify-content: space-evenly;
+      justify-content: space-between;
       align-items: center;
       width: 100%;
       height: 100%;
+      padding: 0 4px;
+      gap: 4px;
     }
 
     &__btn {
-      display: flex;
-      flex-direction: column;
-      min-width: 18% !important;
-      width: 18% !important;
-      max-width: 20%;
+      flex: 1;
+      min-width: 0;
       height: 85% !important;
       padding: 8px;
       border-radius: 10px !important;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      max-width: 80px; 
     }
 
     &__icon {
@@ -107,8 +103,11 @@
       text-align: center;
       font-size: 12px;
       font-weight: 600;
-      line-height: normal;
+      // line-height: 1;
       transition: color 0.2s ease;
+      white-space: nowrap;
+      letter-spacing: normal;
+      word-break: keep-all;
 
       &--active {
         color: var(--ap-btn-primary);
@@ -116,6 +115,7 @@
     }
   }
 </style>
+
 <style>
   .ap-bottom-nav .v-bottom-navigation__content {
     height: 100%;
