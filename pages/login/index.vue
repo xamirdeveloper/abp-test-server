@@ -38,7 +38,8 @@
 
   const router = useRouter();
   const theme = useTheme();
-  const currentTheme = theme.global.name.value;
+
+  const currentTheme = computed(() => theme.global.name.value);
 </script>
 
 <style scoped>

@@ -64,6 +64,7 @@
 <script lang="ts" setup>
   definePageMeta({ layout: 'main' });
 
+  import { useThemeStore } from '@/stores/theme';
   import { useRouter } from 'vue-router';
   import IconAlert from '~/components/icons/IconAlert.vue';
   import IconSetting from '~/components/icons/IconSetting.vue';
@@ -80,11 +81,19 @@
   }
 
   const router = useRouter();
+  const themeStore = useThemeStore();
 
-  const isLight = ref<boolean>(true);
   const isSettingsModalOpen = ref<boolean>(false);
   const isLanguagesModalOpen = ref<boolean>(false);
   const selectedLang = ref<string>('fa');
+
+  const isLight = computed({
+    get: () => themeStore.theme === 'light',
+    set: (val) => {
+      themeStore.setTheme(val ? 'light' : 'dark');
+    },
+  });
+
   const items: ProfileListItem[] = [
     {
       title: 'حساب کاربری',
@@ -132,7 +141,7 @@
     height: calc(100vh - 220px);
     overflow-y: auto;
     scroll-behavior: smooth;
-    margin-bottom: 48px;
+    margin-bottom: 70px;
   }
 
   .profile {
@@ -141,7 +150,7 @@
     }
   }
 
-  .switch-wrapper{
+  .switch-wrapper {
     height: 40px;
   }
 

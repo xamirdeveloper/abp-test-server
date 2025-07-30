@@ -90,7 +90,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      max-width: 80px; 
+      max-width: 80px;
     }
 
     &__icon {
@@ -108,8 +108,7 @@
       white-space: nowrap;
       letter-spacing: normal;
       word-break: keep-all;
-
-      &--active {
+       &--active {
         color: var(--ap-btn-primary);
       }
     }

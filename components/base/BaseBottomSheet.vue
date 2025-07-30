@@ -28,6 +28,18 @@
     set: (val: boolean) => emit('update:modelValue', val),
   });
 
+  watch(model, (val) => {
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = val ? 'hidden' : '';
+      document.documentElement.style.overscrollBehavior = val ? 'none' : '';
+    }
+  });
+
+  onBeforeUnmount(() => {
+    document.body.style.overflow = '';
+    document.documentElement.style.overscrollBehavior = '';
+  });
+
   let startY = 0;
   let currentY = 0;
   let dragging = false;
@@ -46,9 +58,7 @@
     if (!dragging) return;
     const deltaY = currentY - startY;
 
-    if (deltaY > 100) {
-      model.value = false;
-    }
+    if (deltaY > 100) model.value = false;
 
     startY = 0;
     currentY = 0;
@@ -66,7 +76,7 @@
     display: flex;
     flex-direction: column;
     padding: 12px 26px;
-    touch-action: pan-y; 
+    touch-action: pan-y;
 
     &__drag-handle {
       width: 140px;
@@ -78,6 +88,7 @@
 
     &__content {
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       flex: 1;
     }
   }

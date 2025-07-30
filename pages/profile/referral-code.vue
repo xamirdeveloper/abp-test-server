@@ -45,9 +45,9 @@
         document.execCommand('copy');
         document.body.removeChild(textarea);
       }
-      toast.success('با موفقیت انجام شد');
+      toast.success('کد کپی شد.');
     } catch (error) {
-      toast.error('خطایی رخ داد');
+      toast.error('کد کپی نشد');
     }
   };
 
@@ -66,7 +66,7 @@
         toast.success('مرورگر شما از اشتراک‌گذاری پشتیبانی نمی‌کند. لینک کپی شد ');
       }
     } catch (err) {
-      toast.error('خطایی رخ داد');
+      console.log(err)
     }
   };
 </script>
