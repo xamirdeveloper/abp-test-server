@@ -1,46 +1,42 @@
 <template>
-  <div class="ap-page">
-    <page-header class="pt-3" title="پروفایل" :has-alert="true" :has-support="true" />
-    <div class="ap-page-wrapper profile">
-      <profile-avatar title="امیرعلی سالاری" sub-title="0992 571 1758" />
-      <div class="d-flex flex-column justify-center mt-8">
-        <profile-action-item
-          v-for="(item, index) in items"
-          :key="item.title"
-          :title="item.title"
-          :to="item.to"
-          :icon="item.icon"
-          :icon-props="item.iconProps"
-          :chevron="item.chevron ?? true"
-          @click="item.onClick?.()"
-          class="mb-4"
-        />
-        <div class="d-flex justify-space-between align-center switch-wrapper px-0 w-100 mb-4">
-          <div class="d-flex align-center">
-            <div class="ap-border-1 ap-border-accent-primary ap-radius-full icon-wrapper me-3">
-              <icon-brush width="20" height="20" />
-            </div>
-            <span class="ap-txt-subtitle ap-text-primary title">حالت روز</span>
+  <page-header class="pt-3" title="پروفایل" :has-alert="true" :has-support="true" />
+  <div class="ap-page-wrapper profile">
+    <profile-avatar title="امیرعلی سالاری" sub-title="0992 571 1758" />
+    <div class="d-flex flex-column justify-center mt-8">
+      <profile-action-item
+        v-for="(item, index) in items"
+        :key="item.title"
+        :title="item.title"
+        :to="item.to"
+        :icon="item.icon"
+        :icon-props="item.iconProps"
+        :chevron="item.chevron ?? true"
+        @click="item.onClick?.()"
+        class="mb-4"
+      />
+      <div class="d-flex justify-space-between align-center switch-wrapper px-0 w-100 mb-4">
+        <div class="d-flex align-center">
+          <div class="ap-border-1 ap-border-accent-primary ap-radius-full icon-wrapper me-3">
+            <icon-brush width="20" height="20" />
           </div>
-          <v-switch
-            v-model="isLight"
-            color="var(--ap-btn-primary)"
-            hide-details
-            inset
-            density="compact"
-          />
+          <span class="ap-txt-subtitle ap-text-primary title">حالت روز</span>
         </div>
-        <profile-action-item title="خروج" :error="true">
-          <template #icon>
-            <icon-error width="20" height="20" stroke="var(--ap-btn-error)" />
-          </template>
-        </profile-action-item>
+        <v-switch
+          v-model="isLight"
+          color="var(--ap-btn-primary)"
+          hide-details
+          inset
+          density="compact"
+        />
       </div>
-      <div class="app-version">
-        <span class="ap-txt-caption">By Alibaba Pays | v۱.۱.۱</span>
-      </div>
+      <profile-action-item title="خروج" :error="true">
+        <template #icon>
+          <icon-error width="20" height="20" stroke="var(--ap-btn-error)" />
+        </template>
+      </profile-action-item>
     </div>
   </div>
+  <app-version class="profile__app-version" />
   <base-bottom-sheet v-model="isSettingsModalOpen">
     <v-btn
       variant="text"
@@ -141,32 +137,18 @@
 </script>
 
 <style scoped lang="scss">
-  .ap-page {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-  }
-
   .ap-page-wrapper {
+    height: calc(100vh - 220px);
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    overscroll-behavior: contain;
-    padding: 0 20px 70px;
     scroll-behavior: smooth;
+    margin-bottom: 70px;
   }
 
-  // .ap-page-wrapper {
-  //   height: calc(100vh);
-  //   overflow-y: auto;
-  //   scroll-behavior: smooth;
-  // }
-
-  .app-version {
-    color: var(--ap-btn-primary);
-    text-align: center;
-    margin-top: 48px;
-    margin-bottom: 16px;
+  .profile {
+    &__app-version {
+      bottom: 80px;
+      position: absolute;
+    }
   }
 
   .switch-wrapper {
