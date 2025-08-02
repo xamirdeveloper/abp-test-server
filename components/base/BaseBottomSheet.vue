@@ -1,12 +1,12 @@
 <template>
   <v-bottom-sheet v-model="model" :inset="false" :scrim="true" content-class="pa-0" scrollable>
-    <v-card
-      class="base-bottom-sheet"
-      @touchstart="onTouchStart"
-      @touchmove="onTouchMove"
-      @touchend="onTouchEnd"
-    >
-      <div class="base-bottom-sheet__drag-handle" />
+    <v-card :class="['base-bottom-sheet', !hasPadding ? 'px-0' : '']">
+      <div
+        class="base-bottom-sheet__drag-handle"
+        @touchstart="onTouchStart"
+        @touchmove="onTouchMove"
+        @touchend="onTouchEnd"
+      />
       <div class="base-bottom-sheet__content">
         <slot />
       </div>
@@ -15,9 +15,14 @@
 </template>
 
 <script setup lang="ts">
-  const props = defineProps<{
+  interface Props {
     modelValue: boolean;
-  }>();
+    hasPadding?: boolean;
+  }
+
+  const props = withDefaults(defineProps<Props>(), {
+    hasPadding: true,
+  });
 
   const emit = defineEmits<{
     (e: 'update:modelValue', value: boolean): void;
@@ -58,7 +63,7 @@
     if (!dragging) return;
     const deltaY = currentY - startY;
 
-    if (deltaY > 100) model.value = false;
+    if (deltaY > 40) model.value = false;
 
     startY = 0;
     currentY = 0;

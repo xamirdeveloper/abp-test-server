@@ -1,9 +1,9 @@
 <template>
   <v-app>
-    <v-main>
+    <v-main class="main-wrapper">
       <NuxtPage />
     </v-main>
-    <BaseBottomNav :items="items" />
+    <base-bottom-nav :items="items" />
   </v-app>
 </template>
 
@@ -26,3 +26,11 @@
     { label: 'پروفایل', to: '/profile', icon: IconUserProfile },
   ];
 </script>
+<style scoped lang="scss">
+  .main-wrapper {
+    height: 100dvh; 
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+</style>

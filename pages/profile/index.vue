@@ -1,6 +1,6 @@
 <template>
   <page-header class="pt-3" title="پروفایل" :has-alert="true" :has-support="true" />
-  <div class="ap-page-wrapper profile">
+  <div class="ap-page-wrapper">
     <profile-avatar title="امیرعلی سالاری" sub-title="0992 571 1758" />
     <div class="d-flex flex-column justify-center mt-8">
       <profile-action-item
@@ -36,7 +36,7 @@
       </profile-action-item>
     </div>
   </div>
-  <app-version class="profile__app-version" />
+  <app-version class="app-version" />
   <base-bottom-sheet v-model="isSettingsModalOpen">
     <v-btn
       variant="text"
@@ -138,17 +138,15 @@
 
 <style scoped lang="scss">
   .ap-page-wrapper {
-    height: calc(100vh - 220px);
     overflow-y: auto;
     scroll-behavior: smooth;
     margin-bottom: 70px;
+    flex: 1;
   }
 
-  .profile {
-    &__app-version {
-      bottom: 80px;
-      position: absolute;
-    }
+  .app-version {
+    bottom: 80px;
+    position: absolute;
   }
 
   .switch-wrapper {

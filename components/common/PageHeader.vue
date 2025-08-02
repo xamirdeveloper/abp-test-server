@@ -23,7 +23,10 @@
       <v-btn
         v-if="hasSupport"
         icon
-        class="ap-border-1 ap-border-accent-primary opacity-100 ap-me-10"
+        :class="[
+          'ap-border-1 ap-border-accent-primary opacity-100',
+          hasAlert || showBack ? 'ap-me-10' : '',
+        ]"
         width="40"
         height="40"
         variant="plain"
@@ -34,7 +37,7 @@
       <v-btn
         v-if="showBack"
         icon
-        class="ap-border-1 ap-border-accent-primary opacity-100"
+        :class="['ap-border-1 ap-border-accent-primary opacity-100', hasAlert ? 'ap-me-10' : '']"
         width="40"
         height="40"
         variant="plain"

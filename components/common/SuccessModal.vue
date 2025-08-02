@@ -14,7 +14,7 @@
           </div>
         </div>
         <P class="ap-text-primary ap-txt-title-3 mb-2">{{ title }}</P>
-        <span class="ap-txt-body-1 ap-text-secondary text-center px-5">
+        <span v-if="description" class="ap-txt-body-1 ap-text-secondary text-center px-5">
           {{ description }}
         </span>
       </div>

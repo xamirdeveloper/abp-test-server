@@ -25,11 +25,42 @@
     <v-btn class="ap-radius-12 ap-btn-primary w-100 mb-3" height="48">
       <span class="ap-txt-button ap-text-btn">تایید</span>
     </v-btn>
-    <v-btn variant="text" density="compact">
+    <v-btn variant="text" density="compact" @click="isSettingsModalOpen = true">
       <span class="ap-txt-body-2 ap-text-btn-primary">فراموشی ها / نیاز به کمک</span>
     </v-btn>
   </div>
   <app-version />
+  <base-bottom-sheet v-model="isSettingsModalOpen">
+    <v-btn
+      variant="text"
+      height="40"
+      class="d-flex justify-start w-100 pa-1 mb-2"
+      @click="router.push('account-setup/forget-password')"
+    >
+      <icon-lock width="20" height="20" class="me-2" />
+      <span class="ap-txt-title-4">فراموشی رمز</span>
+    </v-btn>
+    <v-divider />
+    <v-btn
+      variant="text"
+      height="40"
+      class="d-flex justify-start w-100 pa-1 my-2"
+      @click="router.push('account-setup/forget-username')"
+    >
+      <icon-user-account width="20" height="20" class="me-2" />
+      <span class="ap-txt-title-4">فراموشی نام کاربری</span>
+    </v-btn>
+    <v-divider />
+    <v-btn
+      variant="text"
+      height="40"
+      class="d-flex justify-start w-100 pa-1 mt-2 mb-4"
+      @click="router.push('support')"
+    >
+      <icon-call width="20" height="20" class="me-2" />
+      <span class="ap-txt-title-4">تماس با پشتیبانی</span>
+    </v-btn>
+  </base-bottom-sheet>
 </template>
 
 <script lang="ts" setup>
@@ -39,6 +70,7 @@
   const router = useRouter();
   const theme = useTheme();
 
+  const isSettingsModalOpen = ref<boolean>(false);
   const currentTheme = computed(() => theme.global.name.value);
 </script>
 
