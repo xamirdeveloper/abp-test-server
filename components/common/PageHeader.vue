@@ -34,6 +34,7 @@
       >
         <icon-support width="22" height="22" />
       </v-btn>
+      <slot name="prepend-back" />
       <v-btn
         v-if="showBack"
         icon

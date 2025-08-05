@@ -7,6 +7,7 @@
     <v-btn
       variant="text"
       min-width="120"
+      height="34"
       class="ap-border-1 ap-border-default ap-radius-14"
       @click="isMonthSheetOpen = true"
     >
@@ -27,9 +28,9 @@
       <div class="icon-wrap icon-wrap__success me-3">
         <icon-deposit stroke="#40C4AA" />
       </div>
-      <div class="d-flex flex-column align-start">
+      <div class="d-flex flex-column align-start justify-center">
         <span class="ap-txt-label ap-text-secondary">مجموع دریافتی</span>
-        <div>
+        <div class="d-flex align-center">
           <span class="ap-fw-bold ap-txt-20 ap-text-primary me-1">۲,۰۰۰,۰۰۰,۰۰۰,۰۰۰</span>
           <span class="ap-txt-caption ap-text-primary">ریال</span>
         </div>
@@ -39,9 +40,9 @@
       <div class="icon-wrap icon-wrap__error me-3">
         <icon-withdraw stroke="#E74D89" />
       </div>
-      <div class="d-flex flex-column align-start">
+      <div class="d-flex flex-column align-start justify-center">
         <span class="ap-txt-label ap-text-secondary">مجموع پرداختی</span>
-        <div>
+        <div class="d-flex align-center">
           <span class="ap-fw-bold ap-txt-20 ap-text-primary me-1">۲,۰۰۰,۰۰۰,۰۰۰,۰۰۰</span>
           <span class="ap-txt-caption ap-text-primary">ریال</span>
         </div>
@@ -54,6 +55,7 @@
         color="var(--ap-btn-primary)"
         density="compact"
         class="pa-1 ps-2 d-flex align-center"
+        @click="router.push('home/transactions')"
       >
         <span class="ap-txt-hint ap-me-6">نمایش همه</span>
         <icon-chevron-left width="18" height="18" stroke="var(--ap-btn-primary)" />
@@ -67,6 +69,7 @@
         :subtitle="item.subtitle"
         :amount="item.amount"
         :type="item.type"
+        @click="router.push('/home/transaction-details')"
       />
     </div>
   </div>
@@ -74,6 +77,10 @@
 
 <script lang="ts" setup>
   definePageMeta({ layout: 'main' });
+
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
 
   const selectedLabel = computed(() => {
     return monthes.value.find((i) => i.value === selectedMonth.value)?.label || '';
