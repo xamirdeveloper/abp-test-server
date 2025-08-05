@@ -10,25 +10,40 @@
 <script setup lang="ts">
   import { useApplyTheme } from '@/composables/useApplyTheme';
   import { type BottomNavItem } from '@/components/base/BaseBottomNav.vue';
-  import IconCart from '~/components/icons/IconCart.vue';
-  import IconHome from '~/components/icons/IconHome.vue';
-  import IconServices from '~/components/icons/IconServices.vue';
-  import IconTransfer from '~/components/icons/IconTransfer.vue';
-  import IconUserProfile from '~/components/icons/IconUserProfile.vue';
+  import IconCartOutline from '~/components/icons/IconCartOutline.vue';
+  import IconHomeOutline from '~/components/icons/IconHomeOutline.vue';
+  import IconServicesOutline from '~/components/icons/IconServicesOutline.vue';
+  import IconTransferOutline from '~/components/icons/IconTransferOutline.vue';
+  import IconUserProfileOutline from '~/components/icons/IconUserProfileOutline.vue';
+  import IconHomeFill from '~/components/icons/IconHomeFill.vue';
+  import IconTransferFill from '~/components/icons/IconTransferFill.vue';
+  import IconUserProfileFill from '~/components/icons/IconUserProfileFill.vue';
+  import IconCartFill from '~/components/icons/IconCartFill.vue';
+  import IconServicesFill from '~/components/icons/IconServicesFill.vue';
 
   useApplyTheme();
 
   const items: BottomNavItem[] = [
-    { label: 'امکانات', to: '/service', icon: IconServices },
-    { label: 'انتقال وجه', to: '/transfer', icon: IconTransfer },
-    { label: 'خانه', to: '/home', icon: IconHome },
-    { label: 'کارت', to: '/cart', icon: IconCart },
-    { label: 'پروفایل', to: '/profile', icon: IconUserProfile },
+    { label: 'امکانات', to: '/services', icon: IconServicesOutline, activeIcon: IconServicesFill },
+    {
+      label: 'انتقال وجه',
+      to: '/transfer',
+      icon: IconTransferOutline,
+      activeIcon: IconTransferFill,
+    },
+    { label: 'خانه', to: '/home', icon: IconHomeOutline, activeIcon: IconHomeFill },
+    { label: 'کارت', to: '/cart', icon: IconCartOutline, activeIcon: IconCartFill },
+    {
+      label: 'پروفایل',
+      to: '/profile',
+      icon: IconUserProfileOutline,
+      activeIcon: IconUserProfileFill,
+    },
   ];
 </script>
 <style scoped lang="scss">
   .main-wrapper {
-    height: 100dvh; 
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
