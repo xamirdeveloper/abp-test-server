@@ -38,23 +38,13 @@
 </template>
 
 <script setup lang="ts">
-  interface InputProps {
-    modelValue: string | number | undefined;
-    label?: string;
-    placeholder?: string;
-    type?: 'text' | 'number' | 'password';
-    id?: string;
-    disabled?: boolean;
-    error?: string;
-    maxlength?: number;
-    readonly?: boolean
-  }
+  import type { BaseInputProps } from './types/inputs';
 
-  const props = withDefaults(defineProps<InputProps>(), {
+  const props = withDefaults(defineProps<BaseInputProps>(), {
     type: 'text',
     label: '',
     placeholder: '',
-    id: 'ap-input',
+    id: '',
     disabled: false,
     error: '',
   });

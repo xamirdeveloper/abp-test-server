@@ -35,10 +35,12 @@
   const initialHeight = ref(0);
   const heightDiff = ref(0);
 
+  const isKeyboardOpen = ref(false);
+
   const updateHeight = () => {
-    if (!initialHeight.value) return;
     const diff = initialHeight.value - window.innerHeight;
     heightDiff.value = diff > 150 ? diff : 0;
+    isKeyboardOpen.value = diff > 150;
   };
 
   onMounted(() => {
@@ -51,8 +53,8 @@
   });
 
   const buttonStyle = computed<CSSProperties>(() => {
-    const bottom = heightDiff.value
-      ? `${heightDiff.value + 20}px`
+    const bottom = isKeyboardOpen.value
+      ? `${heightDiff.value + 10}px`
       : `calc(24px + env(safe-area-inset-bottom))`;
 
     return {

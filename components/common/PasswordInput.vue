@@ -20,17 +20,13 @@
 </template>
 
 <script setup lang="ts">
-  interface Props {
-    modelValue: string;
-    label?: string;
-    placeholder?: string;
-    error?: string;
-    id?: string;
-    maxlength?: number;
+  import type { BaseInputProps } from '../base/types/inputs';
+
+  interface PasswordInputProps extends BaseInputProps {
     hasIcon?: boolean;
   }
 
-  const props = withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<PasswordInputProps>(), {
     hasIcon: true,
   });
 

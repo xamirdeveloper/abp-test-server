@@ -33,18 +33,10 @@
     />
     <div class="d-flex justify-center align-end mb-4 ga-3 w-100">
       <div class="flex-grow-1 money-input">
-        <base-input label="مبلغ تراکنش" placeholder="از مبلغ" type="number">
-          <template #append-icon>
-            <span class="ap-txt-body-1 ap-text-primary">ریال</span>
-          </template>
-        </base-input>
+        <MoneyInput v-model="fromAmount" placeholder="از مبلغ" label="مبلغ تراکنش" />
       </div>
       <div class="flex-grow-1 money-input">
-        <base-input type="number" placeholder="تا مبلغ">
-          <template #append-icon>
-            <span class="ap-txt-body-1 ap-text-primary">ریال</span>
-          </template>
-        </base-input>
+        <MoneyInput v-model="toAmount" placeholder="از مبلغ" />
       </div>
     </div>
 
@@ -81,6 +73,8 @@
   const selectedType = ref<string>('all');
   const selectedTransactionType = ref<string>('all');
   const selectedCategory = ref<string>('all');
+  const fromAmount = ref<string>('');
+  const toAmount = ref<string>('');
   const fromDate = ref<string>('');
   const toDate = ref<string>('');
   const transactionTypes = ref([
