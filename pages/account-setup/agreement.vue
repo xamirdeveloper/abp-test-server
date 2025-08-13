@@ -4,7 +4,6 @@
     title="توافق نامه"
     subtitle="لطفا متن توافق نامه را مطالعه کرده و امضا کنید."
     :show-back="true"
-    :has-support="false"
   />
   <div class="ap-page-wrapper">
     <p v-if="!isLoading" class="ap-txt-body-2 ap-text-primary agreement">

@@ -34,7 +34,7 @@
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    max-width: 50px; 
+    max-width: 50px;
 
     &--prepend {
       margin-inline-end: 8px;
@@ -79,6 +79,8 @@
 
   &--disabled {
     opacity: 0.5;
+    pointer-events: none;
+    user-select: none;
 
     // .ap-input__control {
     //   background-color: var(--ap-bg-default);

@@ -3,7 +3,7 @@ import { defineStore } from 'pinia';
 interface UploadState {
   frontCard?: string;
   backCard?: string;
-  birthCard?: string;
+  birthCertificate?: string;
   cardReceipt?: string;
   userSignature?: string;
   [key: string]: string | undefined;
@@ -13,7 +13,7 @@ export const useUploadStore = defineStore('upload', {
   state: (): UploadState => ({
     frontCard: undefined,
     backCard: undefined,
-    birthCard: undefined,
+    birthCertificate: undefined,
     cardReceipt: undefined,
     userSignature: undefined,
   }),

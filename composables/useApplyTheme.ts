@@ -37,7 +37,7 @@ export const useApplyTheme = () => {
   }
 
   function applyTheme(themeName: 'light' | 'dark') {
-    theme.global.name.value = themeName;
+    theme.change(themeName);
     document.documentElement.classList.remove('theme-light', 'theme-dark');
     document.documentElement.classList.add(`theme-${themeName}`);
   }

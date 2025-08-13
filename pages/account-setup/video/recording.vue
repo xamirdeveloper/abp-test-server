@@ -49,9 +49,14 @@
           </v-btn>
         </div>
       </div>
-      <p class="ap-txt-body-1 ap-text-secondary">
-        “ لطفا متن زیر را بخوانید و از خود ویدیو بگیرید”
-      </p>
+      <p v-if="!isLoading" class="ap-txt-body-1 ap-text-secondary text-center">“ {{ caption }} ”</p>
+      <v-progress-circular
+        v-else
+        indeterminate
+        size="28"
+        color="var(--ap-btn-primary)"
+        class="d-block mx-auto my-4"
+      />
       <div
         v-if="!isRecording && !videoUrl"
         class="ap-radius-full ap-border-2 ap-border-error-300 video-mode__button"
@@ -63,129 +68,143 @@
         class="ap-radius-full ap-border-2 ap-border-error-300 video-mode__button"
       >
         <v-btn icon width="65" height="65" @click="stopRecording" class="ap-btn-error">
-          <span class="ap-txt-32">■</span>
+          <div class="record-shape"></div>
         </v-btn>
       </div>
       <fixed-action-btn v-if="videoUrl" title="ادامه" />
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
-const video = ref<HTMLVideoElement | null>(null);
-const videoUrl = ref<string | null>(null);
-const isRecording = ref(false);
-const isPlaying = ref(false);
-let mediaRecorder: MediaRecorder | null = null;
-let recordedChunks: BlobPart[] = [];
+  import { useRouter } from 'vue-router';
+  import { getVideoCaption as getVideoCaptionApi } from '~/api/account-setup';
 
-const duration = 40;
-const circumference = 2 * Math.PI * 54;
-const progress = ref(0);
+  const caption = ref('');
+  const isLoading = ref(false);
 
-const progressOffset = computed(() => {
-  return circumference - (progress.value / duration) * circumference;
-});
-
-let interval: ReturnType<typeof setInterval>;
-let stream: MediaStream | null = null;
-
-const videoSrc = computed(() => {
-  if (videoUrl.value) return videoUrl.value;
-  return '';
-});
-
-const startCamera = async () => {
-  try {
-    stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'user' },
-      audio: true,
-    });
-    if (video.value) {
-      video.value.srcObject = stream;
-      video.value.muted = true;
-    }
-  } catch (error) {
-    console.error('Error accessing camera:', error);
-  }
-};
-
-const startRecording = () => {
-  if (!stream) return;
-
-  mediaRecorder = new MediaRecorder(stream);
-  recordedChunks = [];
-
-  mediaRecorder.ondataavailable = (e) => {
-    if (e.data.size > 0) {
-      recordedChunks.push(e.data);
+  const getVideoCaption = async () => {
+    try {
+      isLoading.value = true;
+      const req_id = localStorage.getItem('request_id') || '';
+      const response = await getVideoCaptionApi(req_id);
+      if (response.status == 'success' && response.data) {
+        caption.value = response.data.video_caption;
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      isLoading.value = false;
     }
   };
 
-  mediaRecorder.onstop = () => {
-    const blob = new Blob(recordedChunks, { type: 'video/webm' });
-    videoUrl.value = URL.createObjectURL(blob);
+  const video = ref<HTMLVideoElement | null>(null);
+  const videoUrl = ref<string | null>(null);
+  const isRecording = ref(false);
+  const isPlaying = ref(false);
 
+  let mediaRecorder: MediaRecorder | null = null;
+  let recordedChunks: BlobPart[] = [];
+
+  const duration = 25;
+  const circumference = 2 * Math.PI * 54;
+  const progress = ref(0);
+  const progressOffset = computed(
+    () => circumference - (progress.value / duration) * circumference
+  );
+
+  let interval: ReturnType<typeof setInterval>;
+  let stream: MediaStream | null = null;
+
+  const videoSrc = computed(() => videoUrl.value || '');
+
+  const startCamera = async () => {
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user' },
+        audio: { echoCancellation: true, noiseSuppression: true },
+      });
+      if (video.value) {
+        video.value.srcObject = stream;
+        video.value.muted = true;
+        video.value.play().catch(() => {});
+      }
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+    }
+  };
+
+  const startRecording = () => {
+    if (!stream) return;
+
+    mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp8,opus' });
+    recordedChunks = [];
+
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) recordedChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunks, { type: 'video/webm' });
+      videoUrl.value = URL.createObjectURL(blob);
+      if (video.value) {
+        video.value.srcObject = null;
+        video.value.src = videoUrl.value;
+        video.value.load();
+        video.value.muted = false;
+      }
+    };
+
+    mediaRecorder.start();
+    isRecording.value = true;
+    progress.value = 0;
+
+    interval = setInterval(() => {
+      progress.value += 1;
+      if (progress.value >= duration) stopRecording();
+    }, 1000);
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder && isRecording.value) mediaRecorder.stop();
+    isRecording.value = false;
+    clearInterval(interval);
+  };
+
+  const playVideo = () => {
+    isPlaying.value = true;
     if (video.value) {
-      video.value.srcObject = null;
-      video.value.src = videoUrl.value;
-      video.value.load();
       video.value.muted = false;
+      video.value.play().catch((err) => console.error('Play error:', err));
     }
   };
 
-  mediaRecorder.start();
-  isRecording.value = true;
-  progress.value = 0;
+  const handleVideoEnd = () => {
+    isPlaying.value = false;
+  };
 
-  interval = setInterval(() => {
-    progress.value += 1;
-    if (progress.value >= duration) {
-      stopRecording();
+  const removeVideo = () => {
+    videoUrl.value = null;
+    progress.value = 0;
+    isPlaying.value = false;
+    if (video.value) {
+      video.value.src = '';
+      video.value.srcObject = stream;
+      video.value.load();
+      video.value.muted = true;
+      video.value.play().catch(() => {});
     }
-  }, 1000);
-};
+  };
 
-const stopRecording = () => {
-  if (mediaRecorder && isRecording.value) {
-    mediaRecorder.stop();
-  }
-  isRecording.value = false;
-  clearInterval(interval);
-};
+  onMounted(() => {
+    startCamera();
+    getVideoCaption();
+  });
 
-const playVideo = () => {
-  isPlaying.value = true;
-  if (video.value) {
-    video.value.muted = false; // موقع پخش، صدا روشن
-    video.value.play();
-  }
-};
-
-const handleVideoEnd = () => {
-  isPlaying.value = false;
-};
-
-const removeVideo = () => {
-  videoUrl.value = null;
-  progress.value = 0;
-  isPlaying.value = false;
-
-  if (video.value) {
-    video.value.src = '';
-    video.value.srcObject = stream;
-    video.value.load();
-    video.value.muted = true;
-  }
-};
-
-onMounted(() => {
-  startCamera();
-});
-
-onBeforeUnmount(() => {
-  stream?.getTracks().forEach((track) => track.stop());
-  clearInterval(interval);
-});
+  onBeforeUnmount(() => {
+    stream?.getTracks().forEach((track) => track.stop());
+    clearInterval(interval);
+  });
 </script>
 
 <style scoped lang="scss">
@@ -252,5 +271,12 @@ onBeforeUnmount(() => {
       bottom: 40px;
       padding: 3px;
     }
+  }
+
+  .record-shape {
+    width: 22px;
+    height: 22px;
+    background-color: var(--ap-text-btn);
+    border-radius:4px;
   }
 </style>

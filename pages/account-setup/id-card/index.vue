@@ -7,12 +7,12 @@
   />
   <div class="ap-page-wrapper">
     <v-card class="d-flex align-center ap-radius-12 py-5 px-3 ap-mb-6" height="59" elevation="0">
-      <base-radio v-model="selected" value="1" name="myGroup">
+      <base-radio v-model="selected" :value="1" name="myGroup">
         <span class="ap-txt-label ap-text-primary">کارت ملی هوشمند ( جدید ) دارم .</span>
       </base-radio>
     </v-card>
     <v-card class="d-flex align-center ap-radius-12 py-5 px-3 mb-5" height="59" elevation="0">
-      <base-radio v-model="selected" value="2" name="myGroup">
+      <base-radio v-model="selected" :value="2" name="myGroup">
         <span class="ap-txt-label ap-text-primary">رسید کارت ملی هوشمند دارم ( کد رهگیری ).</span>
       </base-radio>
     </v-card>
@@ -21,11 +21,23 @@
       نخواهید بود.
     </p>
   </div>
-  <fixed-action-btn title="تایید" />
+  <fixed-action-btn title="تایید" @click="recognizeIdCardStatus" />
 </template>
 
 <script lang="ts" setup>
-  const selected = ref();
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
+
+  const selected = ref(1);
+
+  const recognizeIdCardStatus = () => {
+    if (selected.value === 1) {
+      router.push('card-info');
+    } else {
+      router.push('card-tracking-code');
+    }
+  };
 </script>
 
 <style scoped>

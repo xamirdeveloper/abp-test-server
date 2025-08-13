@@ -26,6 +26,17 @@
         class="ap-input__field ap-txt-placeholder"
       />
 
+      <v-btn
+        v-if="clearable && internalValue && !disabled && !readonly"
+        icon
+        width="24"
+        height="24"
+        class="ap-input__icon"
+        @click="clearValue"
+      >
+        <icon-close width="14" height="14" />
+      </v-btn>
+
       <span v-if="$slots['append-icon']" class="ap-input__icon ap-input__icon--append">
         <slot name="append-icon" />
       </span>
@@ -47,13 +58,14 @@
     id: '',
     disabled: false,
     error: '',
+    clearable: false,
   });
 
   const emit = defineEmits<{
     (e: 'update:modelValue', value: string | number): void;
   }>();
 
-  const isFocused = ref<boolean>(false);
+  const isFocused = ref(false);
   const internalValue = ref<string>(String(props.modelValue ?? ''));
 
   const inputType = computed(() => {
@@ -68,10 +80,10 @@
     }
   );
 
-  const convertToPersianDigits = (value: string): string =>
+  const convertToPersianDigits = (value: string) =>
     value.replace(/\d/g, (d) => '۰۱۲۳۴۵۶۷۸۹'[parseInt(d)]);
 
-  const convertToEnglishDigits = (value: string): string =>
+  const convertToEnglishDigits = (value: string) =>
     value
       .replace(/[۰-۹]/g, (d) => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(d)))
       .replace(/[٠-٩]/g, (d) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
@@ -95,6 +107,11 @@
         e.preventDefault();
       }
     }
+  };
+
+  const clearValue = () => {
+    internalValue.value = '';
+    emit('update:modelValue', '');
   };
 
   const displayValue = computed(() => {

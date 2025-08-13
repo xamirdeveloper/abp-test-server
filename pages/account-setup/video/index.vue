@@ -20,10 +20,14 @@
       <li class="ap-txt-body-1 ap-text-secondary">با رعایت فاصله مناسب از دوربین</li>
     </ul>
   </div>
-  <fixed-action-btn title="من آماده ام" />
+  <fixed-action-btn title="من آماده ام" @click="router.push('recording')" />
 </template>
 
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
+</script>
 
 <style lang="scss" scoped>
   .ap-page-wrapper {

@@ -4,7 +4,6 @@
     title="تکمیل اطلاعات"
     subtitle="لطفا اطلاعات زیر را تکمیل کنید."
     :show-back="true"
-    :has-support="false"
   />
   <div class="ap-page-wrapper">
     <base-input
@@ -13,6 +12,7 @@
       type="number"
       class="mb-4"
       :error="error.nationalId"
+      :maxlength="10"
     />
     <div class="mb-4">
       <label class="d-block ap-txt-label ap-text-primary ap-mb-6">تاریخ تولد</label>
@@ -30,16 +30,22 @@
         {{ error.birthDate }}
       </p>
     </div>
-    <base-input v-model="mobile" label="تلفن همراه" type="number" :error="error.mobile" />
+    <base-input
+      v-model="mobile"
+      label="تلفن همراه"
+      type="number"
+      :error="error.mobile"
+      :maxlength="11"
+    />
   </div>
   <fixed-action-btn title="ادامه" :is-loading="isLoading" @click="submitForm" />
 </template>
 
 <script lang="ts" setup>
   import { useRouter } from 'vue-router';
-  import { useOtpStore } from '@/stores/otp';
   import { createRequest } from '~/api/account-setup';
   import type { CreateRequestParams } from '~/api/account-setup/types';
+  import { isValidIranianMobile, isValidIranianNationalId } from '@/utils/validators';
 
   interface error {
     nationalId?: string;
@@ -48,7 +54,7 @@
   }
 
   const router = useRouter();
-  const otpStore = useOtpStore();
+
   const nationalId = ref<number>();
   const birthDate = ref<string>('');
   const mobile = ref<number>();
@@ -71,14 +77,13 @@
       return false;
     }
 
-    const nationalIdRegex = /^[0-9]{10}$/;
-    const isValidNationalCode = nationalIdRegex.test(nationalId.value.toString());
+    const isValid = isValidIranianNationalId(nationalId.value);
 
-    if (!isValidNationalCode) {
+    if (!isValid) {
       error.value.nationalId = 'کد ملی وارد شده نامعتبر است.';
     }
 
-    return isValidNationalCode;
+    return isValid;
   };
 
   watch(birthDate, () => (error.value.birthDate = ''));
@@ -98,14 +103,13 @@
       return false;
     }
 
-    const mobileRegex = /^09\d{9}$/;
-    const isValidMobile = mobileRegex.test(mobile.value.toString());
+    const isValid = isValidIranianMobile(mobile.value);
 
-    if (!isValidMobile) {
+    if (!isValid) {
       error.value.mobile = 'شماره موبایل وارد شده صحیح نمی‌باشد.';
     }
 
-    return isValidMobile;
+    return isValid;
   };
 
   const convertDigitsToEnglish = (str: string) =>
@@ -128,10 +132,10 @@
       const response = await createRequest(payload);
 
       if (response.status === 'success' && response.data) {
-        otpStore.setRequestId(response.data.request_id);
+        localStorage.setItem('national_id', nationalId.value?.toString() || '');
         localStorage.setItem('request_id', response.data.request_id);
         localStorage.setItem('user-mobile', mobile.value?.toString() || '');
-        router.push({ name: 'otp', query: { mobile: mobile.value } });
+        router.push({ name: 'otp' });
       }
     } catch (err) {
       console.error(err);
@@ -142,27 +146,7 @@
 </script>
 
 <style scoped lang="scss">
-  .ap-input {
-    &__error {
-      font-size: 12px;
-      color: var(--ap-btn-error);
-      margin-top: 0;
-      padding-right: 5px;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition:
-        opacity 0.1s ease,
-        transform 0.1s ease,
-        margin-top 0.1s ease;
-      display: block;
-
-      &--visible {
-        opacity: 1;
-        transform: translateY(0);
-        margin-top: 4px;
-      }
-    }
-  }
+  @use '@/assets/design-system/input.scss' as *;
 
   .ap-mb-6 {
     margin-bottom: 6px;

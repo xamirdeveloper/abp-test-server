@@ -7,6 +7,7 @@
       :placeholder="placeholder"
       :error="error"
       :readonly="true"
+      :disabled="disabled"
       @click="toggleSheet(true)"
     >
       <template #append-icon>
@@ -49,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-  interface SelectItems {
+  export interface SelectItems {
     value: string | number;
     label: string;
   }
@@ -63,6 +64,7 @@
     title?: string;
     sheetVisible?: boolean;
     hideInput?: boolean;
+    disabled?: boolean;
   }
 
   const props = withDefaults(defineProps<SelectProps>(), {

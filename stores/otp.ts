@@ -1,9 +1,8 @@
-// stores/otpStore.ts
 import { defineStore } from 'pinia';
 
 interface OtpState {
   requestId: string | null;
-  expireTime: number | null; // timestamp
+  expireTime: number | null;
   verified: boolean;
 }
 
@@ -15,17 +14,31 @@ export const useOtpStore = defineStore('otp', {
   }),
 
   actions: {
-    setRequestId(id: string) {
+    setRequestId(id: string | null) {
       this.requestId = id;
     },
-    setExpireTime(secondsFromNow: number) {
-      const now = Date.now();
-      this.expireTime = now + secondsFromNow * 1000;
+    clearRequestId() {
+      this.requestId = null;
+    },
+    setExpireTimeAbsolute(timestamp: number) {
+      this.expireTime = timestamp;
       localStorage.setItem('otp_expire', this.expireTime.toString());
     },
-    loadExpireTime() {
+    loadExpireTime(): boolean {
       const expire = localStorage.getItem('otp_expire');
-      if (expire) this.expireTime = parseInt(expire);
+      const now = Date.now();
+      if (expire && parseInt(expire) > now) {
+        this.expireTime = parseInt(expire);
+        return true;
+      } else {
+        this.expireTime = null;
+        localStorage.removeItem('otp_expire');
+        return false;
+      }
+    },
+    clearExpireTime() {
+      this.expireTime = null;
+      localStorage.removeItem('otp_expire');
     },
     clear() {
       this.requestId = null;

@@ -1,5 +1,5 @@
 export interface BaseInputProps {
-  modelValue: string | number;
+  modelValue: string | number | undefined;
   label?: string;
   placeholder?: string;
   hint?: string;

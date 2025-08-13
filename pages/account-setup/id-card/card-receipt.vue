@@ -28,24 +28,86 @@
       @remove="uploadStore.clearFile('birthCard')"
     />
   </div>
-  <fixed-action-btn title="تایید" :disabled="true" />
+  <fixed-action-btn
+    title="تایید"
+    :disabled="!canConfirm"
+    :is-loading="isLoading"
+    @click="submitForm"
+  />
 </template>
 
 <script lang="ts" setup>
+  import { useRouter } from 'vue-router';
   import { useCameraStore } from '@/stores/camera';
   import { useUploadStore } from '@/stores/upload';
+  import { base64ToFile, compressAndConvertToPNG, uploadFile } from '@/utils/fileUploader';
+  import { useToast } from 'vue-toastification';
 
   const router = useRouter();
   const cameraStore = useCameraStore();
   const uploadStore = useUploadStore();
+  const toast = useToast();
 
   const cardReceipt = computed(() => uploadStore.cardReceipt);
-  const birthCard = computed(() => uploadStore.birthCard);
+  const birthCertificate = computed(() => uploadStore.birthCertificate);
+  const canConfirm = computed(() => !!cardReceipt.value && !!birthCertificate.value);
+  const isLoading = ref<boolean>(false);
 
   const openCamera = (key: string, title: string, subtitle: string) => {
     cameraStore.setTitleSubtitle(title, subtitle);
     cameraStore.setKey(key);
     router.push({ path: '/account-setup/camera-mode' });
+  };
+
+  const submitForm = async () => {
+    const request_id = localStorage.getItem('request_id') || '';
+
+    try {
+      isLoading.value = true;
+      const uploads = [];
+
+      if (uploadStore.cardReceipt) {
+        let file = base64ToFile(uploadStore.cardReceipt, 'cardReceipt.png');
+        if (!file.type.startsWith('image/')) {
+          toast.error('فایل باید فرمت تصویر داشته باشد.');
+          return;
+        }
+        file = await compressAndConvertToPNG(file);
+        uploads.push(
+          uploadFile({
+            url: 'upload/card/front/',
+            request_id,
+            file,
+          })
+        );
+      }
+
+      if (uploadStore.birthCertificate) {
+        let file = base64ToFile(uploadStore.birthCertificate, 'birthCertificate.png');
+        if (!file.type.startsWith('image/')) {
+          toast.error('فایل باید فرمت تصویر داشته باشد.');
+          return;
+        }
+        file = await compressAndConvertToPNG(file);
+        uploads.push(
+          uploadFile({
+            url: 'upload/card/back/',
+            request_id,
+            file,
+          })
+        );
+      }
+
+      await Promise.all(uploads);
+
+      toast.success('تصاویر با موفقیت آپلود شدند.');
+      router.push('/signature-upload');
+    } catch (error) {
+      console.error(error);
+      toast.error('خطا در آپلود تصاویر. لطفا مجددا تلاش کنید.');
+    } finally {
+      isLoading.value = false;
+    }
   };
 </script>
 

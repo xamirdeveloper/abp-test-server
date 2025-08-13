@@ -1,58 +1,146 @@
 <template>
   <page-header class="pt-3" title="دریافت کد" :subtitle="subtitle" :show-back="true" />
-  <div class="ap-page-wrapper">
+
+  <div class="ap-page-wrapper text-center">
     <v-otp-input
       v-model="otpCode"
+      :disabled="globalLoading"
       placeholder="-"
       variant="plain"
       dir="ltr"
       class="mb-3"
       locale="en"
+      length="6"
     />
-    <count-down class="text-center" @resend="sendOtp" @expired="onExpired" />
+
+    <count-down
+      v-if="!globalLoading"
+      :loading="countdownLoading"
+      @resend="sendOtp"
+      @expired="handleExpired"
+    />
+
+    <v-progress-circular
+      v-else
+      indeterminate
+      size="20"
+      color="var(--ap-btn-primary)"
+      class="d-block mx-auto my-4"
+    />
   </div>
-  <fixed-action-btn title="تایید" @click="confirm" />
+
+  <fixed-action-btn
+    title="تایید"
+    :disabled="!canConfirm"
+    :is-loading="confirming"
+    @click="confirm"
+  />
 </template>
 
 <script setup lang="ts">
-  import { useOtpStore } from '@/stores/otp';
+  import { useRouter } from 'vue-router';
+  import { useToast } from 'vue-toastification';
   import { sendOtp as sendOtpApi, confirmOtp as confirmOtpApi } from '@/api/account-setup';
-  import { useRoute, useRouter } from 'vue-router';
+  import { useOtpStore } from '@/stores/otp';
 
-  const otpStore = useOtpStore();
-  const otpCode = ref('');
-  const route = useRoute();
   const router = useRouter();
+  const toast = useToast();
+  const otpStore = useOtpStore();
+
+  const otpCode = ref('');
+  const globalLoading = ref(true);
+  const countdownLoading = ref(false);
+  const confirming = ref(false);
+
+  const canConfirm = computed(
+    () => otpCode.value.length === 6 && !globalLoading.value && !confirming.value
+  );
+
+  const subtitle = computed(() => {
+    const mobile = localStorage.getItem('user-mobile') || '۰۹xxxxxxxx';
+    return `لطفا کد پیامک شده به شماره ${mobile} را وارد کنید`;
+  });
 
   const sendOtp = async () => {
-    if (!otpStore.requestId) return;
-    const res = await sendOtpApi(otpStore.requestId);
-    otpStore.setExpireTime(res.expire_time);
-  };
+    const requestId = localStorage.getItem('request_id');
+    if (!requestId) return;
+    globalLoading.value = true;
+    countdownLoading.value = true;
 
-  const confirm = async () => {
-    if (!otpStore.requestId) return;
-    const res = await confirmOtpApi({
-      request_id: otpStore.requestId,
-      code: otpCode.value,
-    });
-    if (res.status === 'success') {
-      otpStore.markVerified();
-      router.push({ name: 'account-setup/aggrement' });
+    try {
+      const res = await sendOtpApi(requestId);
+      if (res.status === 'success') {
+        const expireISO = res.data.expiretime;
+        const expireTimestamp = new Date(expireISO).getTime();
+        otpStore.setRequestId(requestId);
+        otpStore.setExpireTimeAbsolute(expireTimestamp);
+      } else {
+        throw new Error(res.message || 'خطا در ارسال کد');
+      }
+    } catch (err: any) {
+      if (err?.status === 'error') {
+        toast.error(err.message);
+      } else {
+        toast.error(err.message || 'خطای ناشناخته‌ای رخ داد.');
+      }
+    } finally {
+      globalLoading.value = false;
+      countdownLoading.value = false;
     }
   };
 
-  const onExpired = () => {
-    // فقط کنترل محلی برای غیرفعال بودن دکمه تایید و فعال شدن "ارسال مجدد"
+  const confirm = async () => {
+    if (!canConfirm.value) return;
+    confirming.value = true;
+    try {
+      const requestId = localStorage.getItem('request_id');
+      if (!requestId) throw new Error('شناسه درخواست یافت نشد');
+
+      const res = await confirmOtpApi({
+        request_id: requestId,
+        code: otpCode.value,
+      });
+
+      if (res.status === 'success') {
+        otpStore.markVerified();
+        router.push('aggrement');
+      } else {
+        throw new Error(res.message || 'کد وارد شده نادرست است');
+      }
+    } catch (err: any) {
+      toast.error(err?.message || 'خطا در تأیید کد');
+    } finally {
+      confirming.value = false;
+    }
+  };
+
+  const handleExpired = () => {
+    otpStore.clearExpireTime();
   };
 
   onMounted(() => {
-    otpStore.loadExpireTime();
-    sendOtp();
-  });
+    const storedRequestId = localStorage.getItem('request_id');
 
-  const subtitle = computed(() => {
-    const mobile = route.query.mobile?.toString() || '۰۹xxxxxxxx';
-    return `لطفا کد پیامک شده به شماره ${mobile} را وارد کنید`;
+    if (!storedRequestId) {
+      router.replace({ name: 'account-setup/' });
+      return;
+    }
+
+    const previousRequestId = otpStore.requestId;
+    const isNewRequest = previousRequestId && previousRequestId !== storedRequestId;
+
+    if (isNewRequest) {
+      otpStore.clearExpireTime();
+    }
+
+    otpStore.setRequestId(storedRequestId);
+
+    const hasValidExpire = otpStore.loadExpireTime();
+
+    if (!hasValidExpire) {
+      sendOtp();
+    }
+
+    globalLoading.value = false;
   });
 </script>
