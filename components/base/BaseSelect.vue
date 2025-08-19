@@ -8,6 +8,7 @@
       :error="error"
       :readonly="true"
       :disabled="disabled"
+      :loading="loading"
       @click="toggleSheet(true)"
     >
       <template #append-icon>
@@ -65,6 +66,7 @@
     sheetVisible?: boolean;
     hideInput?: boolean;
     disabled?: boolean;
+    loading?: boolean;
   }
 
   const props = withDefaults(defineProps<SelectProps>(), {

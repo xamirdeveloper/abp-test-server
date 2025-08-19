@@ -21,7 +21,7 @@
     />
     <file-preview
       :removable="true"
-      :src="birthCard"
+      :src="birthCertificate"
       @click="
         openCamera('birthCard', 'شناسنامه', 'لطفا تصویر شناسنامه خود را اسکن و یا بارگذاری  کنید.')
       "
@@ -60,10 +60,14 @@
   };
 
   const submitForm = async () => {
-    const request_id = localStorage.getItem('request_id') || '';
+    const isValid = !!cardReceipt.value && !!birthCertificate.value;
+    if (!isValid) {
+      return;
+    }
 
     try {
       isLoading.value = true;
+      const request_id = localStorage.getItem('request_id') || '';
       const uploads = [];
 
       if (uploadStore.cardReceipt) {
@@ -100,7 +104,6 @@
 
       await Promise.all(uploads);
 
-      toast.success('تصاویر با موفقیت آپلود شدند.');
       router.push('/signature-upload');
     } catch (error) {
       console.error(error);

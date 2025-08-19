@@ -7,16 +7,27 @@ export interface UploadOptions {
   file: File;
   request_id?: string;
   extraData?: Record<string, any>;
+  type?: 'image' | 'video';
 }
 
-export const uploadFile = (options: UploadOptions): Promise<ApiResponse> => {
+export const uploadFile = async (options: UploadOptions): Promise<ApiResponse> => {
+  let finalFile = options.file;
+
+  if (options.type === 'image') {
+    try {
+      finalFile = await compressAndConvertToPNG(options.file);
+    } catch (err) {
+      console.error('Image compression failed, sending original file:', err);
+    }
+  }
+
   const formData = new FormData();
 
   if (options.request_id) {
     formData.append('request_id', options.request_id);
   }
 
-  formData.append('file', options.file);
+  formData.append('file', finalFile);
 
   if (options.extraData) {
     for (const [key, value] of Object.entries(options.extraData)) {

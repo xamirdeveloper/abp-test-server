@@ -6,30 +6,21 @@
     :show-back="true"
   />
   <div class="ap-page-wrapper">
-    <div class="mb-4">
-      <label class="label ap-txt-label ap-text-primary d-block">شهر محل تولد</label>
-      <base-select
-        v-if="!isLoading"
-        v-model="selectedBirthLocation"
-        :items="cities"
-        :error="error.birth"
-      />
-      <div v-else class="w-100 ap-border-1 ap-radius-12 ap-border-default skeleton-wrapper">
-        <v-skeleton-loader class="ap-radius-8" width="119" height="24px"></v-skeleton-loader>
-      </div>
-    </div>
-    <div class="mb-4">
-      <label class="label ap-txt-label ap-text-primary d-block">شهر محل صدور</label>
-      <base-select
-        v-if="!isLoading"
-        v-model="selectedIssuanceLocation"
-        :items="cities"
-        :error="error.issuance"
-      />
-      <div v-else class="w-100 ap-border-1 ap-radius-12 ap-border-default skeleton-wrapper">
-        <v-skeleton-loader class="ap-radius-8" width="119" height="24px"></v-skeleton-loader>
-      </div>
-    </div>
+    <base-select
+      v-model="selectedBirthLocation"
+      :items="cities"
+      :error="error.birth"
+      :loading="isLoading"
+      label="شهر محل تولد"
+      class="mb-4"
+    />
+    <base-select
+      v-model="selectedIssuanceLocation"
+      :items="cities"
+      :error="error.issuance"
+      :loading="isLoading"
+      label="شهر محل صدور"
+    />
   </div>
   <fixed-action-btn title="تایید" @click="submitForm" :disabled="isLoading" />
 </template>
@@ -118,20 +109,3 @@
     getCities('1');
   });
 </script>
-
-<style scoped lang="scss">
-  .label {
-    margin-bottom: 6px;
-  }
-
-  .skeleton-wrapper {
-    height: 48px;
-    padding: 8px 12px;
-    display: flex;
-    align-items: center;
-  }
-
-  .text-area-skeleton {
-    height: 78px;
-  }
-</style>

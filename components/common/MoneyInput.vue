@@ -46,7 +46,7 @@
     return props.showSeparator ? formatMoney(value) : value;
   });
 
-  const onInput = (val: string | number) => {
+  const onInput = (val: string | number | null) => {
     const numeric = String(val).replace(/\D/g, '');
     rawValue.value = numeric;
     emit('update:modelValue', numeric);

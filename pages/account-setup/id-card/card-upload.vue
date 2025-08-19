@@ -60,10 +60,14 @@
   };
 
   const submitForm = async () => {
-    const request_id = localStorage.getItem('request_id') || '';
+    const isValid = !!frontImage.value && !!backImage.value;
+    if (!isValid) {
+      return;
+    }
 
     try {
       isLoading.value = true;
+      const request_id = localStorage.getItem('request_id') || '';
       const uploads = [];
 
       if (uploadStore.frontCard) {
@@ -100,7 +104,6 @@
 
       await Promise.all(uploads);
 
-      toast.success('تصاویر با موفقیت آپلود شدند.');
       router.push('/account-setup/signature-upload');
     } catch (error) {
       console.error(error);

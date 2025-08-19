@@ -79,4 +79,8 @@
   .faq .v-expansion-panel-title__overlay {
     opacity: 0 !important;
   }
+
+  .faq.v-expansion-panels--variant-accordion > .v-expansion-panel::after {
+    border-color: var(--ap-border-default);
+  }
 </style>

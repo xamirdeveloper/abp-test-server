@@ -6,6 +6,8 @@ import type {
   CreateRequestParams,
   CreateRequestResponse,
   EstelamSabtResponse,
+  GetUserAllDataResponse,
+  MobileNationalId,
   Province,
   SetPostalCodeParams,
   SetPostalCodeResponse,
@@ -66,6 +68,16 @@ export const getVideoCaption = (
   return api.post('video/caption/', { request_id: request_id });
 };
 
-export const videoUpload = (): Promise<ApiResponse> => {
-  return api.post('video/upload/');
+export const getUserAllData = (
+  request_id: string
+): Promise<ApiResponse<GetUserAllDataResponse>> => {
+  return api.post('get-data/', { request_id: request_id });
+};
+
+export const setFinalize = (request_id: string): Promise<ApiResponse> => {
+  return api.post('set-finalize/', { request_id: request_id });
+};
+
+export const setUsernamePasswordStepOne = (payload: MobileNationalId): Promise<ApiResponse> => {
+  return api.post('set-username-password-step1/', payload);
 };

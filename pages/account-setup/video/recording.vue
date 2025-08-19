@@ -61,50 +61,52 @@
         v-if="!isRecording && !videoUrl"
         class="ap-radius-full ap-border-2 ap-border-error-300 video-mode__button"
       >
-        <v-btn icon width="65" height="65" @click="startRecording" class="ap-btn-error"></v-btn>
+        <v-btn
+          icon
+          width="65"
+          height="65"
+          :class="[canStartRecording ? 'ap-btn-error' : 'ap-bg-error-100']"
+          :disabled="!canStartRecording"
+          @click="startRecording"
+        ></v-btn>
       </div>
       <div
         v-if="isRecording"
         class="ap-radius-full ap-border-2 ap-border-error-300 video-mode__button"
       >
-        <v-btn icon width="65" height="65" @click="stopRecording" class="ap-btn-error">
+        <v-btn icon width="65" height="65" class="ap-btn-error" @click="stopRecording">
           <div class="record-shape"></div>
         </v-btn>
       </div>
-      <fixed-action-btn v-if="videoUrl" title="ادامه" />
+      <fixed-action-btn
+        v-if="videoUrl"
+        title="ادامه"
+        :is-loading="isSubmitting"
+        @click="submitVideo"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
   import { useRouter } from 'vue-router';
+  import { uploadFile } from '@/utils/fileUploader';
   import { getVideoCaption as getVideoCaptionApi } from '~/api/account-setup';
+
+  const router = useRouter();
 
   const caption = ref('');
   const isLoading = ref(false);
-
-  const getVideoCaption = async () => {
-    try {
-      isLoading.value = true;
-      const req_id = localStorage.getItem('request_id') || '';
-      const response = await getVideoCaptionApi(req_id);
-      if (response.status == 'success' && response.data) {
-        caption.value = response.data.video_caption;
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      isLoading.value = false;
-    }
-  };
-
+  const isSubmitting = ref(false);
   const video = ref<HTMLVideoElement | null>(null);
   const videoUrl = ref<string | null>(null);
   const isRecording = ref(false);
   const isPlaying = ref(false);
+  const isCameraReady = ref(false);
 
   let mediaRecorder: MediaRecorder | null = null;
   let recordedChunks: BlobPart[] = [];
+  let recordedBlob: Blob | null = null;
 
   const duration = 25;
   const circumference = 2 * Math.PI * 54;
@@ -112,6 +114,9 @@
   const progressOffset = computed(
     () => circumference - (progress.value / duration) * circumference
   );
+  const canStartRecording = computed(() => {
+    return isCameraReady.value && !isLoading.value && !isRecording.value;
+  });
 
   let interval: ReturnType<typeof setInterval>;
   let stream: MediaStream | null = null;
@@ -129,6 +134,7 @@
         video.value.muted = true;
         video.value.play().catch(() => {});
       }
+      isCameraReady.value = true;
     } catch (error) {
       console.error('Error accessing camera:', error);
     }
@@ -146,6 +152,7 @@
 
     mediaRecorder.onstop = () => {
       const blob = new Blob(recordedChunks, { type: 'video/webm' });
+      recordedBlob = blob;
       videoUrl.value = URL.createObjectURL(blob);
       if (video.value) {
         video.value.srcObject = null;
@@ -193,6 +200,50 @@
       video.value.load();
       video.value.muted = true;
       video.value.play().catch(() => {});
+    }
+  };
+
+  const getVideoCaption = async () => {
+    try {
+      isLoading.value = true;
+      const req_id = localStorage.getItem('request_id') || '';
+      const response = await getVideoCaptionApi(req_id);
+      if (response.status == 'success' && response.data) {
+        caption.value = response.data.video_caption;
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      isLoading.value = false;
+    }
+  };
+
+  const submitVideo = async () => {
+    if (!recordedBlob) {
+      return;
+    }
+
+    const file = new File([recordedBlob], `video_${Date.now()}.webm`, { type: 'video/webm' });
+
+    isSubmitting.value = true;
+
+    try {
+      const request_id = localStorage.getItem('request_id') || '';
+      const res = await uploadFile({
+        url: 'https://bank.alibabapays.com/api/video/upload/',
+        file,
+        request_id,
+      });
+
+      if (res?.status === 'success') {
+        recordedChunks = [];
+        recordedBlob = null;
+        router.push('/account-setup/final-confirmation');
+      }
+    } catch (err: any) {
+      console.error('Upload error:', err);
+    } finally {
+      isSubmitting.value = false;
     }
   };
 
@@ -277,6 +328,6 @@
     width: 22px;
     height: 22px;
     background-color: var(--ap-text-btn);
-    border-radius:4px;
+    border-radius: 4px;
   }
 </style>

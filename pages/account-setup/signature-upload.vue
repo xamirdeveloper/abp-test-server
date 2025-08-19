@@ -47,29 +47,31 @@
   };
 
   const submitForm = async () => {
-    const request_id = localStorage.getItem('request_id') || '';
+    if (!uploadStore.userSignature) {
+      return;
+    }
 
     try {
       isLoading.value = true;
+      const request_id = localStorage.getItem('request_id') || '';
 
-      if (uploadStore.userSignature) {
-        let file = base64ToFile(uploadStore.userSignature, 'userSignature.png');
-        if (!file.type.startsWith('image/')) {
-          toast.error('فایل باید فرمت تصویر داشته باشد.');
-          return;
-        }
-        file = await compressAndConvertToPNG(file);
-        uploadFile({
-          url: 'upload/signature/',
-          request_id,
-          file,
-        });
+      let file = base64ToFile(uploadStore.userSignature, 'userSignature.png');
+      if (!file.type.startsWith('image/')) {
+        toast.error('فایل باید فرمت تصویر داشته باشد.');
+        return;
       }
+      file = await compressAndConvertToPNG(file);
+      const res = await uploadFile({
+        url: 'upload/signature/',
+        request_id,
+        file,
+      });
 
-      router.push('video/');
+      if (res.status == 'success') {
+        router.push('video/');
+      }
     } catch (error) {
       console.error(error);
-      toast.error('خطا در آپلود تصاویر. لطفا مجددا تلاش کنید.');
     } finally {
       isLoading.value = false;
     }

@@ -10,6 +10,7 @@
       </span>
 
       <input
+        v-if="!loading"
         :id="id"
         :type="inputType"
         :inputmode="type === 'number' ? 'numeric' : undefined"
@@ -19,12 +20,16 @@
         :value="displayValue"
         autocomplete="off"
         :maxlength="maxlength"
-        @keypress="handleKeyPress"
+        @keydown="handleKeyDown"
         @focus="isFocused = true"
         @blur="isFocused = false"
         @input="handleInput"
         class="ap-input__field ap-txt-placeholder"
       />
+
+      <div v-else class="ap-input__skltn-loading">
+        <v-skeleton-loader class="ap-radius-8" width="119" height="24px" />
+      </div>
 
       <v-btn
         v-if="clearable && internalValue && !disabled && !readonly"
@@ -62,7 +67,7 @@
   });
 
   const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | number): void;
+    (e: 'update:modelValue', value: string | number | null): void;
   }>();
 
   const isFocused = ref(false);
@@ -96,22 +101,27 @@
       value = convertToEnglishDigits(value).replace(/[^\d]/g, '');
     }
 
+    if (props.maxlength) {
+      value = value.slice(0, props.maxlength);
+    }
+
     internalValue.value = value;
-    emit('update:modelValue', value);
+    emit('update:modelValue', props.type === 'number' ? (value ? Number(value) : null) : value);
   };
 
-  const handleKeyPress = (e: KeyboardEvent) => {
-    if (props.type === 'number') {
-      const char = e.key;
-      if (!/[0-9۰-۹]/.test(char)) {
-        e.preventDefault();
-      }
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (props.type !== 'number') return;
+
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+    if (!/[0-9۰-۹٠-٩]/.test(e.key)) {
+      e.preventDefault();
     }
   };
 
   const clearValue = () => {
     internalValue.value = '';
-    emit('update:modelValue', '');
+    emit('update:modelValue', props.type === 'number' ? null : '');
   };
 
   const displayValue = computed(() => {

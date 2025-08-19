@@ -6,52 +6,50 @@
     :show-back="true"
   />
   <div class="ap-page-wrapper">
-    <div class="mb-4">
-      <label class="ap-txt-label ap-text-primary d-block ap-mb-6 opacity-50">نام کامل</label>
-      <base-input v-if="!isLoading" v-model="fullName" type="text" :disabled="true" />
-      <div
-        v-else
-        class="w-100 ap-border-1 ap-radius-12 ap-border-default opacity-50 skeleton-wrapper"
-      >
-        <v-skeleton-loader class="ap-radius-8" width="119" height="24px" />
-      </div>
-    </div>
-    <div class="mb-4">
-      <label class="ap-txt-label ap-text-primary d-block ap-mb-6 opacity-50">جنسیت</label>
-      <base-input v-if="!isLoading" v-model="gender" type="text" :disabled="true" />
-      <div
-        v-else
-        class="w-100 ap-border-1 ap-radius-12 ap-border-default opacity-50 skeleton-wrapper"
-      >
-        <v-skeleton-loader class="ap-radius-8" width="119" height="24px" />
-      </div>
-    </div>
-    <div class="mb-4">
-      <label class="ap-txt-label ap-text-primary d-block ap-mb-6 opacity-50">نام پدر</label>
-      <base-input v-if="!isLoading" v-model="fatherName" type="text" :disabled="true" />
-      <div
-        v-else
-        class="w-100 ap-border-1 ap-radius-12 ap-border-default opacity-50 skeleton-wrapper"
-      >
-        <v-skeleton-loader class="ap-radius-8" width="119" height="24px" />
-      </div>
-    </div>
-    <base-input v-model="nationalId" label="کد ملی" type="number" class="mb-4" :disabled="true" />
-    <div>
-      <label class="ap-txt-label ap-text-primary d-block ap-mb-6 opacity-50">شماره شناسنامه</label>
-      <base-input v-if="!isLoading" v-model="birthCertificateNum" type="number" :disabled="true" />
-      <div
-        v-else
-        class="w-100 ap-border-1 ap-radius-12 ap-border-default opacity-50 skeleton-wrapper"
-      >
-        <v-skeleton-loader class="ap-radius-8" width="119" height="24px" />
-      </div>
-    </div>
+    <base-input
+      v-model="fullName"
+      label="نام کامل"
+      type="text"
+      class="mb-4"
+      :disabled="canConfirm"
+      :loading="isLoading"
+    />
+    <base-input
+      v-model="gender"
+      label="جنسیت"
+      type="text"
+      class="mb-4"
+      :disabled="canConfirm"
+      :loading="isLoading"
+    />
+    <base-input
+      v-model="fatherName"
+      label="نام پدر"
+      type="text"
+      class="mb-4"
+      :disabled="canConfirm"
+      :loading="isLoading"
+    />
+    <base-input
+      v-model="nationalId"
+      label="کد ملی"
+      type="number"
+      class="mb-4"
+      :disabled="canConfirm"
+      :loading="isLoading"
+    />
+    <base-input
+      v-model="birthCertificateNum"
+      label="شماره شناسنامه"
+      type="number"
+      class="mb-4"
+      :disabled="canConfirm"
+      :loading="isLoading"
+    />
   </div>
   <fixed-action-btn
     title="تایید"
     :disabled="!canConfirm"
-    :is-loading="isLoading"
     @click="router.push('/account-setup/address')"
   />
 </template>
@@ -121,12 +119,5 @@
 
   .ap-mb-6 {
     margin-bottom: 6px;
-  }
-
-  .skeleton-wrapper {
-    height: 48px;
-    padding: 8px 12px;
-    display: flex;
-    align-items: center;
   }
 </style>

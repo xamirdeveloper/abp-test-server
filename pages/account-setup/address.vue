@@ -17,24 +17,29 @@
       class="mb-4"
       @input="setPostalCodeAndGetAddressByIt"
     />
-    <div class="mb-4">
-      <label class="label ap-txt-label ap-text-primary d-block opacity-50">استان</label>
-      <base-input v-if="!isLoading" v-model="province" :disabled="true" />
-      <div v-else class="w-100 ap-border-1 ap-radius-12 ap-border-default skeleton-wrapper">
-        <v-skeleton-loader class="ap-radius-8" width="119" height="24px"></v-skeleton-loader>
-      </div>
-    </div>
-    <div class="mb-4">
-      <label class="label ap-txt-label ap-text-primary d-block opacity-50">شهر</label>
-      <base-input v-if="!isLoading" v-model="city" :disabled="true" />
-      <div v-else class="w-100 ap-border-1 ap-radius-12 ap-border-default skeleton-wrapper">
-        <v-skeleton-loader class="ap-radius-8" width="119" height="24px"></v-skeleton-loader>
-      </div>
-    </div>
+    <base-input
+      v-model="province"
+      label="استان"
+      type="number"
+      class="mb-4"
+      :disabled="true"
+      :loading="isLoading"
+    />
+    <base-input
+      v-model="city"
+      label="شهر"
+      type="number"
+      class="mb-4"
+      :disabled="true"
+      :loading="isLoading"
+    />
     <div class="mb-4">
       <label class="label ap-txt-label ap-text-primary d-block opacity-50">نشانی پستی</label>
       <textarea v-if="!isLoading" v-model="address" disabled />
-      <div v-else class="w-100 ap-border-1 ap-radius-12 ap-border-default text-area-skeleton">
+      <div
+        v-else
+        class="w-100 ap-border-1 ap-radius-12 ap-border-default text-area-skeleton opacity-50"
+      >
         <v-skeleton-loader class="ap-radius-8 ma-3" width="209" height="24px"></v-skeleton-loader>
       </div>
     </div>
@@ -131,13 +136,6 @@
 <style scoped lang="scss">
   .label {
     margin-bottom: 6px;
-  }
-
-  .skeleton-wrapper {
-    height: 48px;
-    padding: 8px 12px;
-    display: flex;
-    align-items: center;
   }
 
   .text-area-skeleton {

@@ -75,3 +75,33 @@ export interface SetPostalCodeResponse {
   city: string;
   address: string;
 }
+
+export interface GetUserAllDataResponse {
+  address: string;
+  birthCertificateLocation: string;
+  birthCertificateNo: string;
+  birthCertificateSerial: string;
+  birthCertificateSeries: string;
+  birthLocation: string;
+  birthday: string;
+  citizenShip: string;
+  city: string;
+  contractConfirmation: string;
+  fatherName: string;
+  firstName: string;
+  gender: GenderCode;
+  lastName: string;
+  mobile: string;
+  nationalCardExpireDate: string;
+  nationalCardSerialNo: string;
+  nationalId: string;
+  occupation: string;
+  postalCode: string;
+  province: string;
+  subEconomicSector: string;
+}
+
+export interface MobileNationalId {
+  mobile: string;
+  national_id: string;
+}
