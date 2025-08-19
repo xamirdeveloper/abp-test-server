@@ -111,14 +111,14 @@
   };
 
   const handleBeforeInput = (e: Event) => {
-    const inputEvent = e as InputEvent;
     if (props.type !== 'number' || !props.maxlength) return;
 
+    const inputEvent = e as InputEvent;
     const target = e.target as HTMLInputElement;
-    const selectionLength = target.selectionEnd! - target.selectionStart!;
+    const currentNumericLength = target.value.replace(/\D/g, '').length;
     const incomingLength = inputEvent.data?.replace(/\D/g, '').length ?? 0;
-    const currentLength = target.value.replace(/[^\d]/g, '').length;
-    const newLength = currentLength - selectionLength + incomingLength;
+    const selectionLength = target.selectionEnd! - target.selectionStart!;
+    const newLength = currentNumericLength - selectionLength + incomingLength;
 
     if (newLength > props.maxlength) {
       e.preventDefault();
