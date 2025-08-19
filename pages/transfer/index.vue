@@ -17,7 +17,6 @@
   definePageMeta({ layout: 'main' });
 
   const amount = ref();
-  watch(amount, () => console.log(amount.value));
 </script>
 
 <style scoped>

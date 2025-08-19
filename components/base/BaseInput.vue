@@ -67,7 +67,7 @@
   });
 
   const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | number | null): void;
+    (e: 'update:modelValue', value: string | number): void;
   }>();
 
   const isFocused = ref(false);
@@ -102,7 +102,7 @@
     }
 
     internalValue.value = value;
-    emit('update:modelValue', props.type === 'number' ? (value ? Number(value) : null) : value);
+    emit('update:modelValue', value);
   };
 
   const handleKeyPress = (e: KeyboardEvent) => {
@@ -116,7 +116,7 @@
 
   const clearValue = () => {
     internalValue.value = '';
-    emit('update:modelValue', props.type === 'number' ? null : '');
+    emit('update:modelValue', '');
   };
 
   const displayValue = computed(() => {
