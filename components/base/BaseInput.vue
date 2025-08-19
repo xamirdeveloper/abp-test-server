@@ -20,7 +20,7 @@
         :value="displayValue"
         autocomplete="off"
         :maxlength="maxlength"
-        @keydown="handleKeyDown"
+        @keypress="handleKeyPress"
         @focus="isFocused = true"
         @blur="isFocused = false"
         @input="handleInput"
@@ -109,13 +109,12 @@
     emit('update:modelValue', props.type === 'number' ? (value ? Number(value) : null) : value);
   };
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (props.type !== 'number') return;
-
-    if (e.ctrlKey || e.metaKey || e.altKey) return;
-
-    if (!/[0-9۰-۹٠-٩]/.test(e.key)) {
-      e.preventDefault();
+  const handleKeyPress = (e: KeyboardEvent) => {
+    if (props.type === 'number') {
+      const char = e.key;
+      if (!/[0-9۰-۹]/.test(char)) {
+        e.preventDefault();
+      }
     }
   };
 
