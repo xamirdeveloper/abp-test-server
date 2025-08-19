@@ -6,6 +6,7 @@
       v-model="amount"
       label="مبلغ"
       class="transfer-money-input ap-mb-6"
+      :maxlength="13"
     />
     <toman-price-display v-if="!!amount" :amount="amount" />
   </div>

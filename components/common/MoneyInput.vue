@@ -4,7 +4,6 @@
     :model-value="displayValue"
     @update:model-value="onInput"
     class="money-input"
-    :maxlength="13"
   >
     <template #append-icon v-if="showCurrencySign">
       <span class="ap-txt-body-1 ap-text-secondary">ریال</span>
@@ -47,7 +46,12 @@
   });
 
   const onInput = (val: string | number | null) => {
-    const numeric = String(val).replace(/\D/g, '');
+    let numeric = String(val).replace(/\D/g, '');
+
+    if (props.maxlength) {
+      numeric = numeric.slice(0, props.maxlength);
+    }
+
     rawValue.value = numeric;
     emit('update:modelValue', numeric);
   };
