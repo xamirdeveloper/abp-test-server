@@ -23,6 +23,7 @@
         @keypress="handleKeyPress"
         @focus="isFocused = true"
         @blur="isFocused = false"
+        @beforeinput="handleBeforeInput"
         @input="handleInput"
         class="ap-input__field ap-txt-placeholder"
       />
@@ -107,6 +108,20 @@
 
     internalValue.value = value;
     emit('update:modelValue', props.type === 'number' ? (value ? Number(value) : null) : value);
+  };
+
+  const handleBeforeInput = (e: Event) => {
+    if (props.type !== 'number' || !props.maxlength) return;
+
+    const inputEvent = e as InputEvent;
+    const target = e.target as HTMLInputElement;
+
+    const selectionLength = target.selectionEnd! - target.selectionStart!;
+    const newLength = target.value.length - selectionLength + (inputEvent.data?.length ?? 0);
+
+    if (newLength > props.maxlength) {
+      e.preventDefault();
+    }
   };
 
   const handleKeyPress = (e: KeyboardEvent) => {
