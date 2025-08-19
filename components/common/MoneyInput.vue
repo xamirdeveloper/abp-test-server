@@ -2,6 +2,7 @@
   <base-input
     v-bind="baseInputProps"
     :model-value="displayValue"
+    @beforeinput="onBeforeInput"
     @update:model-value="onInput"
     class="money-input"
   >
@@ -19,6 +20,7 @@
     modelValue: string | number;
     showSeparator?: boolean;
     showCurrencySign?: boolean;
+    maxAmount?: number;
   }
 
   const props = withDefaults(defineProps<Props>(), {
@@ -40,17 +42,23 @@
   );
 
   const displayValue = computed(() => {
-    if (!rawValue.value) return '';
-    return props.showSeparator ? formatMoney(rawValue.value) : rawValue.value;
+    const value = rawValue.value.replace(/\D/g, '');
+    if (!value) return '';
+    return props.showSeparator ? formatMoney(value) : value;
   });
 
-  const onInput = (val: string | number | null) => {
-    let numeric = String(val).replace(/\D/g, '');
+  const onBeforeInput = (e: InputEvent) => {
+    if (!e.data) return;
 
-    if (props.maxlength) {
-      numeric = numeric.slice(0, props.maxlength);
+    const current = rawValue.value || '';
+    const next = (current + e.data).replace(/\D/g, '');
+    if (props.maxAmount && Number(next) > props.maxAmount) {
+      e.preventDefault(); //
     }
+  };
 
+  const onInput = (val: string | number | null) => {
+    let numeric = String(val ?? '').replace(/\D/g, '');
     rawValue.value = numeric;
     emit('update:modelValue', numeric);
   };

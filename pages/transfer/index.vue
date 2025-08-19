@@ -6,7 +6,7 @@
       v-model="amount"
       label="مبلغ"
       class="transfer-money-input ap-mb-6"
-      :maxlength="13"
+      :max-amount="2000000000"
     />
     <toman-price-display v-if="!!amount" :amount="amount" />
   </div>
@@ -17,6 +17,7 @@
   definePageMeta({ layout: 'main' });
 
   const amount = ref();
+  watch(amount, () => console.log(amount.value));
 </script>
 
 <style scoped>
