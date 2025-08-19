@@ -40,9 +40,8 @@
   );
 
   const displayValue = computed(() => {
-    const value = rawValue.value.replace(/\D/g, '');
-    if (!value) return '';
-    return props.showSeparator ? formatMoney(value) : value;
+    if (!rawValue.value) return '';
+    return props.showSeparator ? formatMoney(rawValue.value) : rawValue.value;
   });
 
   const onInput = (val: string | number | null) => {
