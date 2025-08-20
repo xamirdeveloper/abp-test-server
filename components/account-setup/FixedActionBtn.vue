@@ -14,65 +14,84 @@
     <slot name="append" />
   </v-btn>
 </template>
+
 <script setup lang="ts">
-  import type { CSSProperties } from 'vue';
+import type { CSSProperties } from 'vue';
 
-  interface Props {
-    title?: string;
-    disabled?: boolean;
-    isLoading?: boolean;
-    color?: string;
-    textColor?: string;
+interface Props {
+  title?: string;
+  disabled?: boolean;
+  isLoading?: boolean;
+  color?: string;
+  textColor?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  color: 'ap-btn-primary',
+  textColor: 'ap-text-btn',
+});
+
+defineEmits<{ (e: 'click'): void }>();
+
+const initialHeight = ref(0);
+const isKeyboardOpen = ref(false);
+const keyboardOffset = ref(0);
+
+const updateHeight = () => {
+  const viewport = window.visualViewport;
+  const currentHeight = viewport?.height || window.innerHeight;
+
+  const diff = initialHeight.value - currentHeight;
+
+  if (diff > 150) {
+    // کیبورد بازه
+    isKeyboardOpen.value = true;
+    keyboardOffset.value = diff;
+  } else {
+    // کیبورد بسته است
+    isKeyboardOpen.value = false;
+    keyboardOffset.value = 0;
   }
+};
 
-  const props = withDefaults(defineProps<Props>(), {
-    color: 'ap-btn-primary',
-    textColor: 'ap-text-btn',
-  });
+onMounted(() => {
+  initialHeight.value = window.visualViewport?.height || window.innerHeight;
 
-  defineEmits<{ (e: 'click'): void }>();
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', updateHeight);
+  } else {
+    // fallback برای بعضی اندرویدها
+    window.addEventListener('resize', updateHeight);
+  }
+});
 
-  const initialHeight = ref(0);
-  const heightDiff = ref(0);
-  const isKeyboardOpen = ref(false);
+onUnmounted(() => {
+  if (window.visualViewport) {
+    window.visualViewport.removeEventListener('resize', updateHeight);
+  } else {
+    window.removeEventListener('resize', updateHeight);
+  }
+});
 
-  const updateHeight = () => {
-    const viewport = window.visualViewport;
-    if (!viewport) return;
+const buttonStyle = computed<CSSProperties>(() => {
+  const bottom = isKeyboardOpen.value
+    ? `${keyboardOffset.value + 10}px`
+    : `calc(24px + env(safe-area-inset-bottom, 0px))`;
 
-    const diff = initialHeight.value - viewport.height;
-    heightDiff.value = diff > 150 ? diff : 0;
-    isKeyboardOpen.value = diff > 150;
+  return {
+    bottom,
+    position: 'fixed',
   };
-
-  onMounted(() => {
-    initialHeight.value = window.visualViewport?.height || window.innerHeight;
-    window.visualViewport?.addEventListener('resize', updateHeight);
-  });
-
-  onUnmounted(() => {
-    window.visualViewport?.removeEventListener('resize', updateHeight);
-  });
-
-  const buttonStyle = computed<CSSProperties>(() => {
-    const bottom = isKeyboardOpen.value
-      ? `${heightDiff.value + 10}px`
-      : `calc(24px + env(safe-area-inset-bottom))`;
-
-    return {
-      bottom,
-      position: 'fixed',
-    };
-  });
+});
 </script>
 
 <style scoped lang="scss">
-  .fab-btn {
-    position: fixed;
-    width: calc(100% - 40px);
-    left: 20px;
-    right: 20px;
-    transition: bottom 0.3s ease;
-    z-index: 999;
-  }
+.fab-btn {
+  position: fixed;
+  width: calc(100% - 40px);
+  left: 20px;
+  right: 20px;
+  transition: bottom 0.25s ease;
+  z-index: 999;
+}
 </style>
