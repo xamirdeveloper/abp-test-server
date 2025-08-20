@@ -33,56 +33,33 @@ const props = withDefaults(defineProps<Props>(), {
 
 defineEmits<{ (e: 'click'): void }>();
 
-const initialHeight = ref(0);
-const isKeyboardOpen = ref(false);
-const keyboardOffset = ref(0);
+const viewportHeight = ref(window.visualViewport?.height || window.innerHeight);
+const offsetBottom = ref(24);
 
-const updateHeight = () => {
+const updatePosition = () => {
   const viewport = window.visualViewport;
-  const currentHeight = viewport?.height || window.innerHeight;
+  if (!viewport) return;
 
-  const diff = initialHeight.value - currentHeight;
+  viewportHeight.value = viewport.height;
 
-  if (diff > 150) {
-    // کیبورد بازه
-    isKeyboardOpen.value = true;
-    keyboardOffset.value = diff;
-  } else {
-    // کیبورد بسته است
-    isKeyboardOpen.value = false;
-    keyboardOffset.value = 0;
-  }
+  // وقتی کیبورد باز شد اختلاف محاسبه میشه
+  const diff = (window.innerHeight - viewport.height);
+
+  offsetBottom.value = diff > 150 ? diff + 10 : 24;
 };
 
 onMounted(() => {
-  initialHeight.value = window.visualViewport?.height || window.innerHeight;
-
-  if (window.visualViewport) {
-    window.visualViewport.addEventListener('resize', updateHeight);
-  } else {
-    // fallback برای بعضی اندرویدها
-    window.addEventListener('resize', updateHeight);
-  }
+  window.visualViewport?.addEventListener('resize', updatePosition);
 });
 
 onUnmounted(() => {
-  if (window.visualViewport) {
-    window.visualViewport.removeEventListener('resize', updateHeight);
-  } else {
-    window.removeEventListener('resize', updateHeight);
-  }
+  window.visualViewport?.removeEventListener('resize', updatePosition);
 });
 
-const buttonStyle = computed<CSSProperties>(() => {
-  const bottom = isKeyboardOpen.value
-    ? `${keyboardOffset.value + 10}px`
-    : `calc(24px + env(safe-area-inset-bottom, 0px))`;
-
-  return {
-    bottom,
-    position: 'fixed',
-  };
-});
+const buttonStyle = computed<CSSProperties>(() => ({
+  bottom: `calc(${offsetBottom.value}px + env(safe-area-inset-bottom))`,
+  position: 'fixed',
+}));
 </script>
 
 <style scoped lang="scss">
