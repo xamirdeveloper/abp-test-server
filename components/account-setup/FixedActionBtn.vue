@@ -1,59 +1,84 @@
+<template>
+  <div class="fab-container">
+    <v-btn
+      :class="[disabled ? 'ap-btn-disabled' : color, 'fab-btn ap-radius-12']"
+      :style="buttonStyle"
+      height="48"
+      :disabled="disabled"
+      :loading="isLoading"
+      @click="$emit('click')"
+    >
+      <slot name="prepend" />
+      <span :class="['ap-txt-button', textColor]">
+        {{ title }}
+      </span>
+      <slot name="append" />
+    </v-btn>
+  </div>
+</template>
+
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, computed } from "vue"
+import type { CSSProperties } from "vue";
 
-const offsetBottom = ref(24)
-
-const lockScroll = () => {
-  document.body.style.height = "100vh"
-  document.body.style.overflow = "hidden"
+interface Props {
+  title?: string;
+  disabled?: boolean;
+  isLoading?: boolean;
+  color?: string;
+  textColor?: string;
 }
 
-const unlockScroll = () => {
-  document.body.style.height = ""
-  document.body.style.overflow = ""
-}
+const props = withDefaults(defineProps<Props>(), {
+  color: "ap-btn-primary",
+  textColor: "ap-text-btn",
+});
 
-const updatePosition = () => {
-  const viewport = window.visualViewport
-  if (!viewport) return
+defineEmits<{ (e: "click"): void }>();
 
-  const diff = window.innerHeight - viewport.height
+const initialHeight = ref(0);
+const heightDiff = ref(0);
+const isKeyboardOpen = ref(false);
 
-  if (diff > 150) {
-    // کیبورد بازه
-    offsetBottom.value = diff + 10
-    lockScroll()
-  } else {
-    // کیبورد بسته
-    offsetBottom.value = 24
-    unlockScroll()
-  }
-}
+const updateHeight = () => {
+  const viewport = window.visualViewport;
+  if (!viewport) return;
+
+  const diff = initialHeight.value - viewport.height;
+  heightDiff.value = diff > 150 ? diff : 0;
+  isKeyboardOpen.value = diff > 150;
+};
 
 onMounted(() => {
-  window.visualViewport?.addEventListener("resize", updatePosition)
-})
+  initialHeight.value = window.visualViewport?.height || window.innerHeight;
+  window.visualViewport?.addEventListener("resize", updateHeight);
+});
 
 onUnmounted(() => {
-  window.visualViewport?.removeEventListener("resize", updatePosition)
-  unlockScroll()
-})
+  window.visualViewport?.removeEventListener("resize", updateHeight);
+});
 
-const buttonStyle = computed(() => ({
-  bottom: `calc(${offsetBottom.value}px + env(safe-area-inset-bottom))`,
-  position: "fixed",
-  left: "20px",
-  right: "20px",
-  width: "calc(100% - 40px)",
-}))
+const buttonStyle = computed<CSSProperties>(() => {
+  return {
+    bottom: isKeyboardOpen.value
+      ? `${heightDiff.value + 10}px`
+      : `calc(24px + env(safe-area-inset-bottom))`,
+    position: "absolute",
+  };
+});
 </script>
 
-<template>
-  <v-btn
-    :style="buttonStyle"
-    class="fab-btn ap-radius-12"
-    height="48"
-  >
-    {{ "تأیید" }}
-  </v-btn>
-</template>
+<style scoped lang="scss">
+.fab-container {
+  position: relative;
+  width: 100%;
+}
+
+.fab-btn {
+  position: absolute;
+  width: calc(100% - 40px);
+  left: 20px;
+  right: 20px;
+  transition: bottom 0.3s ease;
+  z-index: 999;
+}
+</style>
