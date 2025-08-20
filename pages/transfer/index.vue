@@ -10,11 +10,15 @@
     />
     <toman-price-display v-if="!!amount" :amount="amount" />
   </div>
-  <fixed-action-btn title="ادامه" :disabled="!amount" class="submit-btn" />
+  <fixed-action-btn title="ادامه" :disabled="!Number(amount)" class="submit-btn" />
 </template>
 
 <script lang="ts" setup>
   definePageMeta({ layout: 'main' });
+
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
 
   const amount = ref();
 </script>

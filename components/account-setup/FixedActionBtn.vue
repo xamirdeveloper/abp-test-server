@@ -14,7 +14,7 @@
     <slot name="append" />
   </v-btn>
 </template>
-<script lang="ts" setup>
+<script setup lang="ts">
   import type { CSSProperties } from 'vue';
 
   interface Props {
@@ -34,22 +34,24 @@
 
   const initialHeight = ref(0);
   const heightDiff = ref(0);
-
   const isKeyboardOpen = ref(false);
 
   const updateHeight = () => {
-    const diff = initialHeight.value - window.innerHeight;
+    const viewport = window.visualViewport;
+    if (!viewport) return;
+
+    const diff = initialHeight.value - viewport.height;
     heightDiff.value = diff > 150 ? diff : 0;
     isKeyboardOpen.value = diff > 150;
   };
 
   onMounted(() => {
-    initialHeight.value = window.innerHeight;
-    window.addEventListener('resize', updateHeight);
+    initialHeight.value = window.visualViewport?.height || window.innerHeight;
+    window.visualViewport?.addEventListener('resize', updateHeight);
   });
 
   onUnmounted(() => {
-    window.removeEventListener('resize', updateHeight);
+    window.visualViewport?.removeEventListener('resize', updateHeight);
   });
 
   const buttonStyle = computed<CSSProperties>(() => {
