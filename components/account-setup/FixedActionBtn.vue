@@ -1,20 +1,16 @@
 <template>
-  <div class="fab-container">
-    <v-btn
-      :class="[disabled ? 'ap-btn-disabled' : color, 'fab-btn ap-radius-12']"
-      :style="buttonStyle"
-      height="48"
-      :disabled="disabled"
-      :loading="isLoading"
-      @click="$emit('click')"
-    >
-      <slot name="prepend" />
-      <span :class="['ap-txt-button', textColor]">
-        {{ title }}
-      </span>
-      <slot name="append" />
-    </v-btn>
-  </div>
+  <v-btn
+    :class="[disabled ? 'ap-btn-disabled' : color, 'fab-btn ap-radius-12']"
+    :style="buttonStyle"
+    height="48"
+    :disabled="disabled"
+    :loading="isLoading"
+    @click="$emit('click')"
+  >
+    <slot name="prepend" />
+    <span :class="['ap-txt-button', textColor]">{{ title }}</span>
+    <slot name="append" />
+  </v-btn>
 </template>
 
 <script setup lang="ts">
@@ -36,16 +32,22 @@ const props = withDefaults(defineProps<Props>(), {
 defineEmits<{ (e: "click"): void }>();
 
 const initialHeight = ref(0);
-const heightDiff = ref(0);
 const isKeyboardOpen = ref(false);
+const keyboardHeight = ref(0);
 
 const updateHeight = () => {
   const viewport = window.visualViewport;
   if (!viewport) return;
 
   const diff = initialHeight.value - viewport.height;
-  heightDiff.value = diff > 150 ? diff : 0;
-  isKeyboardOpen.value = diff > 150;
+
+  if (diff > 150) {
+    isKeyboardOpen.value = true;
+    keyboardHeight.value = diff;
+  } else {
+    isKeyboardOpen.value = false;
+    keyboardHeight.value = 0;
+  }
 };
 
 onMounted(() => {
@@ -57,28 +59,21 @@ onUnmounted(() => {
   window.visualViewport?.removeEventListener("resize", updateHeight);
 });
 
-const buttonStyle = computed<CSSProperties>(() => {
-  return {
-    bottom: isKeyboardOpen.value
-      ? `${heightDiff.value + 10}px`
-      : `calc(24px + env(safe-area-inset-bottom))`,
-    position: "absolute",
-  };
-});
+const buttonStyle = computed<CSSProperties>(() => ({
+  position: isKeyboardOpen.value ? "absolute" : "fixed",
+  bottom: isKeyboardOpen.value
+    ? `${keyboardHeight.value + 10}px`
+    : `calc(24px + env(safe-area-inset-bottom))`,
+  left: "20px",
+  right: "20px",
+  transition: "all 0.3s ease",
+}));
 </script>
 
 <style scoped lang="scss">
-.fab-container {
-  position: relative;
-  width: 100%;
-}
-
 .fab-btn {
-  position: absolute;
   width: calc(100% - 40px);
-  left: 20px;
-  right: 20px;
-  transition: bottom 0.3s ease;
   z-index: 999;
+  border-radius: 12px;
 }
 </style>
