@@ -29,6 +29,10 @@
     outline: none;
   }
 
+  &__field::placeholder {
+    color: var(--ap-text-tertiary);
+  }
+
   &__skltn-loading {
     flex: 1;
     min-width: 0;

@@ -43,7 +43,7 @@
 </script>
 <style scoped lang="scss">
   .main-wrapper {
-    height: 100svh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
