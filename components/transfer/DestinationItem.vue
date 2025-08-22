@@ -20,7 +20,6 @@
       </v-btn>
     </div>
 
-    <!-- آیتم اصلی -->
     <div
       class="swipe-item"
       :style="{ transform: `translateX(${translateX}px)` }"
