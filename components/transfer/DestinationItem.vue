@@ -38,14 +38,14 @@
         <div class="d-flex justify-start align-center w-100 destination-item__content">
           <div class="me-2 d-flex align-center position-relative ap-radius-full">
             <img
-              src="@/assets/images/male-avatar.webp"
+              :src="item.avatarUrl"
               alt="avatar"
               width="50"
               height="50"
               class="ap-radius-full"
             />
             <div class="destination-item__bank-logo d-flex justify-center align-center">
-              <img src="@/assets/images/saman.svg" alt="bank logo" width="19" height="19" />
+              <img :src="item.banckLogo" alt="bank logo" width="19" height="19" />
             </div>
           </div>
           <div class="text-start flex-grow-1">
