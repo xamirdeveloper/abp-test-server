@@ -40,8 +40,8 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, watchEffect } from 'vue';
-  import { useDrag } from '@vueuse/gesture';
+  import { ref, onMounted } from 'vue';
+  import Hammer from 'hammerjs';
 
   export interface RecipientItem {
     id: string | number;
@@ -60,50 +60,39 @@
     (e: 'pin', id: string | number): void;
   }>();
 
-  // Defaults
   const defaultAvatar = '/images/male-avatar.webp';
   const defaultBankLogo = '/images/saman.svg';
 
-  // Refs for motion
   const cardRef = ref<HTMLElement | null>(null);
   const x = ref(0);
-  const targetX = ref(0);
   const isOpen = ref(false);
   const actionWidth = 140;
 
-  // Smooth animation loop
-  watchEffect(() => {
-    requestAnimationFrame(() => {
-      if (cardRef.value) {
-        // simple easing motion
-        x.value += (targetX.value - x.value) * 0.2;
-        cardRef.value.style.transform = `translateX(${x.value}px)`;
+  onMounted(() => {
+    if (!cardRef.value) return;
+    const hammer = new Hammer(cardRef.value);
+    hammer.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL });
+
+    hammer.on('pan', (ev) => {
+      let newX = isOpen.value ? -actionWidth + ev.deltaX : ev.deltaX;
+      if (newX > 0) newX = 0;
+      if (newX < -actionWidth) newX = -actionWidth;
+      cardRef.value!.style.transform = `translateX(${newX}px)`;
+    });
+
+    hammer.on('panend', (ev) => {
+      if ((isOpen.value ? -actionWidth + ev.deltaX : ev.deltaX) < -actionWidth / 2) {
+        x.value = -actionWidth;
+        isOpen.value = true;
+      } else {
+        x.value = 0;
+        isOpen.value = false;
       }
+      cardRef.value!.style.transition = 'transform 0.2s ease';
+      cardRef.value!.style.transform = `translateX(${x.value}px)`;
+      setTimeout(() => (cardRef.value!.style.transition = ''), 200);
     });
   });
-
-  // Drag gesture
-  useDrag(
-    ({ movement: [mx], last }) => {
-      if (!last) {
-        x.value = isOpen.value ? -actionWidth + mx : mx;
-        if (x.value > 0) x.value = 0;
-      } else {
-        if (x.value < -actionWidth / 2) {
-          targetX.value = -actionWidth;
-          isOpen.value = true;
-        } else {
-          targetX.value = 0;
-          isOpen.value = false;
-        }
-      }
-    },
-    {
-      target: cardRef,
-      axis: 'x',
-      filterTaps: true,
-    }
-  );
 </script>
 
 <style scoped lang="scss">
