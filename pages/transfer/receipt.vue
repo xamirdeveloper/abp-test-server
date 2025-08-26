@@ -69,7 +69,7 @@
           <span class="ap-txt-body-1 ap-text-primary">۸۷۳۵۱۲</span>
         </div>
       </v-card>
-      <!-- <svg
+      <svg
         class="card-subtract"
         xmlns="http://www.w3.org/2000/svg"
         width="351"
@@ -116,8 +116,7 @@
             />
           </filter>
         </defs>
-      </svg> -->
-      <img src="@/assets/images/subtract.svg" class="card-subtract" />
+      </svg>
     </div>
   </div>
 </template>
