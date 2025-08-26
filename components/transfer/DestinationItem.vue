@@ -111,8 +111,15 @@
 
     hammer.on('panend', () => {
       // کارت همیشه کامل باز یا کامل بسته شود
-      if (x.value < -actionWidth / 2) emit('opened', props.item.id);
-      else emit('closed', props.item.id);
+      if (x.value < -actionWidth / 2) {
+        x.value = -actionWidth;
+        cardRef.value!.style.transform = `translateX(${x.value}px)`;
+        emit('opened', props.item.id);
+      } else {
+        x.value = 0;
+        cardRef.value!.style.transform = `translateX(${x.value}px)`;
+        emit('closed', props.item.id);
+      }
     });
 
     document.addEventListener('click', onClickOutside);
