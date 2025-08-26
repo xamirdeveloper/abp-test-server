@@ -31,14 +31,31 @@
             @click="selectItem(item)"
           >
             <div class="d-flex justify-space-between align-center">
-              <span
-                :class="[
-                  'ap-txt-title-5',
-                  item.value === modelValue ? 'ap-text-primary' : 'ap-text-secondary',
-                ]"
-              >
-                {{ item.label }}
-              </span>
+              <div>
+                <div :class="['d-flex align-center', item.subtitle ? 'mb-3' : '']">
+                  <span
+                    :class="[
+                      'ap-txt-title-5',
+                      item.value === modelValue ? 'ap-text-primary' : 'ap-text-secondary',
+                      item.caption ? 'me-3' : '',
+                    ]"
+                  >
+                    {{ item.label }}
+                  </span>
+                  <span
+                    v-if="item.caption"
+                    :class="[
+                      'ap-txt-caption',
+                      item.value === modelValue ? 'ap-text-primary' : 'ap-text-secondary',
+                    ]"
+                  >
+                    {{ item.caption }}
+                  </span>
+                </div>
+                <span v-if="item.subtitle" class="ap-txt-caption ap-text-tertiary">
+                  {{ item.subtitle }}
+                </span>
+              </div>
               <div v-show="item.value === modelValue" class="ap-select__check-icon">
                 <icon-check stroke="var(--ap-bg-surface)" width="16" height="16" />
               </div>
@@ -54,6 +71,8 @@
   export interface SelectItems {
     value: string | number;
     label: string;
+    caption?: string;
+    subtitle?: string;
   }
 
   interface SelectProps {
@@ -67,6 +86,7 @@
     hideInput?: boolean;
     disabled?: boolean;
     loading?: boolean;
+    clearable?: boolean;
   }
 
   const props = withDefaults(defineProps<SelectProps>(), {

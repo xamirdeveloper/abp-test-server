@@ -1,6 +1,8 @@
 <template>
   <v-app>
-    <NuxtPage />
+    <v-main class="main-wrapper">
+      <NuxtPage />
+    </v-main>
   </v-app>
 </template>
 
@@ -9,3 +11,11 @@
 
   useApplyTheme();
 </script>
+<style scoped>
+  .main-wrapper {
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+</style>

@@ -16,6 +16,9 @@
         <icon-open-eye1 v-else width="20" height="20" />
       </v-btn>
     </template>
+    <template #append-icon v-else>
+      <slot />
+    </template>
   </base-input>
 </template>
 

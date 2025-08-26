@@ -10,7 +10,12 @@
     />
     <toman-price-display v-if="!!amount" :amount="amount" />
   </div>
-  <fixed-action-btn title="ادامه" :disabled="!Number(amount)" class="submit-btn" />
+  <fixed-action-btn
+    title="ادامه"
+    :disabled="!Number(amount)"
+    class="submit-btn"
+    @click="router.push('destination')"
+  />
 </template>
 
 <script lang="ts" setup>
