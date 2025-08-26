@@ -1,23 +1,27 @@
 <template>
   <div class="destination-swipe-wrapper">
     <!-- اکشن‌ها -->
-    <div class="destination-actions" :style="{ width: actionWidth + 'px' }">
+    <div class="destination-actions">
       <button class="action-btn pin" @click.stop="emit('pin', item.id)">📌</button>
       <button class="action-btn delete" @click.stop="emit('delete', item.id)">🗑</button>
     </div>
 
-    <!-- کارت اصلی -->
-    <div
-      ref="cardRef"
-      class="destination-card"
-      :class="{ 'is-open': isOpen }"
-      :style="{ transform: `translateX(${x}px)` }"
-      @click="emit('select', item.id)"
+    <!-- کارت اصلی با v-motion -->
+    <motion-div
+      class="d-block ap-bg-surface ap-radius-12 pa-3 w-100 destination-item"
+      :class="{ 'destination-item__selected-item': isSelected }"
+      v-motion
+      drag="x"
+      :dragConstraints="{ left: -actionWidth, right: 0 }"
+      :dragElastic="0.3"
+      :transition="{ type: 'spring', stiffness: 400, damping: 30 }"
+      @dragEnd="handleDragEnd"
+      v-model:x="x"
     >
       <div class="d-flex justify-start align-center w-100 destination-item__content">
         <div class="me-2 d-flex align-center position-relative ap-radius-full">
           <img
-            :src="item.avatarUrl || '/images/male-avatar.webp'"
+            :src="item.avatarUrl || require('@/assets/images/male-avatar.webp')"
             alt="avatar"
             width="50"
             height="50"
@@ -25,7 +29,7 @@
           />
           <div class="destination-item__bank-logo d-flex justify-center align-center">
             <img
-              :src="item.bankLogo || '/images/saman.svg'"
+              :src="item.bankLogo || require('@/assets/images/saman.svg')"
               alt="bank logo"
               width="19"
               height="19"
@@ -41,13 +45,12 @@
         </div>
         <icon-pin v-if="item.isFavorite" width="20" height="20" stroke="var(--ap-text-secondary)" />
       </div>
-    </div>
+    </motion-div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue';
-  import { useDrag } from '@vueuse/gesture';
+  import { ref, watch } from 'vue';
 
   export interface RecipientItem {
     id: string | number;
@@ -66,40 +69,16 @@
     (e: 'pin', id: string | number): void;
   }>();
 
-  const cardRef = ref<HTMLElement | null>(null);
-  const x = ref(0);
-  const isOpen = ref(false);
   const actionWidth = 140;
+  const x = ref(0);
 
-  onMounted(() => {
-    if (!cardRef.value) return;
-
-    useDrag(
-      ({ movement: [mx], last }) => {
-        // درگ
-        if (!last) {
-          x.value = isOpen.value ? -actionWidth + mx : mx;
-          if (x.value > 0) x.value = 0; // اجازه کشیدن به راست نده
-        } else {
-          // رها کردن دست → تصمیم نهایی
-          if (Math.abs(x.value) > actionWidth / 2) {
-            x.value = -actionWidth;
-            isOpen.value = true;
-          } else {
-            x.value = 0;
-            isOpen.value = false;
-          }
-        }
-      },
-      {
-        target: cardRef,
-        axis: 'x',
-        pointer: true, // مهم برای موبایل واقعی
-        touch: true, // فعال کردن تاچ
-        filterTaps: true,
-      }
-    );
-  });
+  const handleDragEnd = () => {
+    if (x.value < -actionWidth / 2) {
+      x.value = -actionWidth;
+    } else {
+      x.value = 0;
+    }
+  };
 </script>
 
 <style scoped lang="scss">
@@ -118,7 +97,6 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    background: #f5f5f5;
     z-index: 1;
   }
 
@@ -131,28 +109,21 @@
     cursor: pointer;
     color: white;
   }
-
   .action-btn.pin {
     background: #3f51b5;
   }
-
   .action-btn.delete {
     background: #f44336;
-  }
-
-  .destination-card {
-    position: relative;
-    background: white;
-    border-radius: 12px;
-    z-index: 2;
-    transition: transform 0.2s ease-out;
-    touch-action: pan-y; // اجازه scroll عمودی
   }
 
   .destination-item {
     height: fit-content;
     border: 1px solid transparent;
     box-sizing: border-box;
+    position: relative;
+    z-index: 2;
+    border-radius: 12px;
+    transition: box-shadow 0.2s ease;
 
     &__selected-item {
       border: 1px solid var(--ap-btn-primary);
