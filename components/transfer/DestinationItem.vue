@@ -1,9 +1,13 @@
 <template>
   <div class="destination-swipe-wrapper">
     <!-- اکشن‌ها -->
-    <div class="destination-actions">
-      <button class="action-btn pin" @click.stop="emit('pin', item.id)">📌</button>
-      <button class="action-btn delete" @click.stop="emit('delete', item.id)">🗑</button>
+    <div class="destination-actions d-flex align-center ga-1">
+      <v-btn variant="text" class="action-btn ap-btn-error" @click.stop="emit('delete', item.id)">
+        <icon-trash width="22" height="22" stroke="var(--ap-bg-surface)" />
+      </v-btn>
+      <v-btn variant="text" class="action-btn ap-btn-gray" @click.stop="emit('pin', item.id)">
+        <icon-pin width="22" height="22" stroke="var(--ap-text-btn)" />
+      </v-btn>
     </div>
 
     <!-- کارت اصلی -->
@@ -66,7 +70,7 @@
 
   const cardRef = ref<HTMLElement | null>(null);
   const x = ref(0);
-  const actionWidth = 140;
+  const actionWidth = 65 * 2 + 9; // دو دکمه و gap 4px
   let hammer: HammerManager | null = null;
 
   // انیمیشن نرم به مقصد
@@ -110,16 +114,21 @@
     });
 
     hammer.on('panend', () => {
-      // کارت همیشه کامل باز یا کامل بسته شود
+      if (!cardRef.value) return;
+      cardRef.value.style.transition = 'transform 0.3s ease'; // برگشت ملایم‌تر
+
       if (x.value < -actionWidth / 2) {
         x.value = -actionWidth;
-        cardRef.value!.style.transform = `translateX(${x.value}px)`;
         emit('opened', props.item.id);
       } else {
         x.value = 0;
-        cardRef.value!.style.transform = `translateX(${x.value}px)`;
         emit('closed', props.item.id);
       }
+
+      cardRef.value.style.transform = `translateX(${x.value}px)`;
+      setTimeout(() => {
+        if (cardRef.value) cardRef.value.style.transition = '';
+      }, 300);
     });
 
     document.addEventListener('click', onClickOutside);
@@ -147,22 +156,19 @@
     justify-content: flex-end;
     align-items: center;
     z-index: 1;
+    margin-inline-start: 1px;
   }
   .action-btn {
-    width: 70px;
-    height: 100%;
+    width: 65px;
+    height: calc(100% - 1px);
     border: none;
     outline: none;
     font-size: 18px;
     cursor: pointer;
     color: white;
+    border-radius: 12px;
   }
-  .action-btn.pin {
-    background: #3f51b5;
-  }
-  .action-btn.delete {
-    background: #f44336;
-  }
+
   .destination-item {
     height: fit-content;
     border: 1px solid transparent;
