@@ -6,34 +6,24 @@
       <button class="action-btn delete" @click.stop="emit('delete', item.id)">🗑</button>
     </div>
 
-    <!-- کارت اصلی با v-motion -->
-    <motion-div
+    <!-- کارت اصلی -->
+    <div
+      ref="cardRef"
       class="d-block ap-bg-surface ap-radius-12 pa-3 w-100 destination-item"
       :class="{ 'destination-item__selected-item': isSelected }"
-      v-motion
-      drag="x"
-      :dragConstraints="{ left: -actionWidth, right: 0 }"
-      :dragElastic="0.3"
-      :transition="{ type: 'spring', stiffness: 400, damping: 30 }"
-      @dragEnd="handleDragEnd"
-      v-model:x="x"
+      @click="emit('select', item.id)"
     >
       <div class="d-flex justify-start align-center w-100 destination-item__content">
         <div class="me-2 d-flex align-center position-relative ap-radius-full">
           <img
-            :src="item.avatarUrl || require('@/assets/images/male-avatar.webp')"
+            :src="item.avatarUrl || defaultAvatar"
             alt="avatar"
             width="50"
             height="50"
             class="ap-radius-full"
           />
           <div class="destination-item__bank-logo d-flex justify-center align-center">
-            <img
-              :src="item.bankLogo || require('@/assets/images/saman.svg')"
-              alt="bank logo"
-              width="19"
-              height="19"
-            />
+            <img :src="item.bankLogo || defaultBankLogo" alt="bank logo" width="19" height="19" />
           </div>
         </div>
         <div class="text-start flex-grow-1">
@@ -45,12 +35,13 @@
         </div>
         <icon-pin v-if="item.isFavorite" width="20" height="20" stroke="var(--ap-text-secondary)" />
       </div>
-    </motion-div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref, watch } from 'vue';
+  import { ref, watchEffect } from 'vue';
+  import { useDrag } from '@vueuse/gesture';
 
   export interface RecipientItem {
     id: string | number;
@@ -69,16 +60,50 @@
     (e: 'pin', id: string | number): void;
   }>();
 
-  const actionWidth = 140;
-  const x = ref(0);
+  // Defaults
+  const defaultAvatar = '/images/male-avatar.webp';
+  const defaultBankLogo = '/images/saman.svg';
 
-  const handleDragEnd = () => {
-    if (x.value < -actionWidth / 2) {
-      x.value = -actionWidth;
-    } else {
-      x.value = 0;
+  // Refs for motion
+  const cardRef = ref<HTMLElement | null>(null);
+  const x = ref(0);
+  const targetX = ref(0);
+  const isOpen = ref(false);
+  const actionWidth = 140;
+
+  // Smooth animation loop
+  watchEffect(() => {
+    requestAnimationFrame(() => {
+      if (cardRef.value) {
+        // simple easing motion
+        x.value += (targetX.value - x.value) * 0.2;
+        cardRef.value.style.transform = `translateX(${x.value}px)`;
+      }
+    });
+  });
+
+  // Drag gesture
+  useDrag(
+    ({ movement: [mx], last }) => {
+      if (!last) {
+        x.value = isOpen.value ? -actionWidth + mx : mx;
+        if (x.value > 0) x.value = 0;
+      } else {
+        if (x.value < -actionWidth / 2) {
+          targetX.value = -actionWidth;
+          isOpen.value = true;
+        } else {
+          targetX.value = 0;
+          isOpen.value = false;
+        }
+      }
+    },
+    {
+      target: cardRef,
+      axis: 'x',
+      filterTaps: true,
     }
-  };
+  );
 </script>
 
 <style scoped lang="scss">
