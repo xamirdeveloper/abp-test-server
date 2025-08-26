@@ -14,7 +14,7 @@
         :key="item.id"
         :item="item"
         :isSelected="selectedId === item.id"
-        :is-open="openId === item.id"
+        :isOpen="openId === item.id"
         @select="onSelect"
         @opened="onOpen"
         @closed="onClose"
@@ -38,13 +38,12 @@
 <script lang="ts" setup>
   import { type RecipientItem } from '~/components/transfer/DestinationItem.vue';
 
-  const isTransferMethodSheetOpen = ref<boolean>(true);
+  const isTransferMethodSheetOpen = ref(true);
   const selectedTransferMethod = ref<string | null>(null);
-  const destination = ref<string>('');
+  const destination = ref('');
   const selectedId = ref<string | number | null>(null);
   const openId = ref<string | number | null>(null);
 
-  // داده‌های نمونه
   const fakeData = ref<RecipientItem[]>([
     {
       id: 1,
@@ -114,11 +113,10 @@
 
   // باز شدن کارت (یک کارت در یک زمان)
   const onOpen = (id: string | number) => {
-    if (openId.value && openId.value !== id) {
-      openId.value = null; // کارت قبلی بسته شود
-    }
-    // برای هماهنگی با animation بعدی nextTick
-    nextTick(() => (openId.value = id));
+    if (openId.value && openId.value !== id) openId.value = null;
+    nextTick(() => {
+      openId.value = id;
+    });
   };
 
   // بستن کارت

@@ -84,19 +84,19 @@
   watch(
     () => props.isOpen,
     (val) => {
-      if (val) animateTo(-actionWidth);
-      else animateTo(0);
+      animateTo(val ? -actionWidth : 0);
     },
     { immediate: true }
   );
 
   // مدیریت کلیک بیرون کارت
   const onClickOutside = (e: MouseEvent) => {
-    if (!cardRef.value?.contains(e.target as Node)) emit('closed', props.item.id);
+    if (!cardRef.value?.contains(e.target as Node) && props.isOpen) emit('closed', props.item.id);
   };
 
   onMounted(() => {
     if (!cardRef.value) return;
+
     hammer = new Hammer(cardRef.value);
     hammer.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL });
 
@@ -110,6 +110,7 @@
     });
 
     hammer.on('panend', () => {
+      // کارت همیشه کامل باز یا کامل بسته شود
       if (x.value < -actionWidth / 2) emit('opened', props.item.id);
       else emit('closed', props.item.id);
     });
