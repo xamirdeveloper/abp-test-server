@@ -1,5 +1,11 @@
 <template>
   <div class="destination-swipe-wrapper">
+    <!-- اکشن‌ها -->
+    <div class="destination-actions">
+      <button class="action-btn pin" @click.stop="emit('pin', item.id)">📌</button>
+      <button class="action-btn delete" @click.stop="emit('delete', item.id)">🗑</button>
+    </div>
+
     <!-- کارت اصلی -->
     <div
       ref="cardRef"
@@ -34,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
+  import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
   import Hammer from 'hammerjs';
 
   export interface RecipientItem {
@@ -47,12 +53,12 @@
     isFavorite?: boolean;
   }
 
-  const props = defineProps<{ item: RecipientItem; isSelected?: boolean }>();
+  const props = defineProps<{ item: RecipientItem; isSelected?: boolean; isOpen?: boolean }>();
   const emit = defineEmits<{
     (e: 'select', id: string | number): void;
     (e: 'delete', id: string | number): void;
     (e: 'pin', id: string | number): void;
-    (e: 'opened', id: string | number): void; // برای مدیریت باز بودن در پرنت
+    (e: 'opened', id: string | number): void;
     (e: 'closed', id: string | number): void;
   }>();
 
@@ -61,22 +67,21 @@
 
   const cardRef = ref<HTMLElement | null>(null);
   const x = ref(0);
-  const isOpen = ref(false);
   const actionWidth = 140;
   let hammer: HammerManager | null = null;
 
-  // باز شدن/بستن کارت با easing نرم
+  // باز/بسته کردن کارت با easing نرم
   const animateX = (to: number) => {
     if (!cardRef.value) return;
     const start = x.value;
     const change = to - start;
-    const duration = 200; // ms
+    const duration = 200;
     let startTime: number | null = null;
 
     const step = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
       const progress = Math.min((timestamp - startTime) / duration, 1);
-      const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress; // simple ease
+      const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
       x.value = start + change * ease;
       cardRef.value!.style.transform = `translateX(${x.value}px)`;
       if (progress < 1) requestAnimationFrame(step);
@@ -84,22 +89,32 @@
     requestAnimationFrame(step);
   };
 
+  // بستن کارت
   const closeCard = () => {
-    isOpen.value = false;
     animateX(0);
     emit('closed', props.item.id);
   };
 
+  // باز کردن کارت
   const openCard = () => {
-    isOpen.value = true;
     animateX(-actionWidth);
     emit('opened', props.item.id);
   };
 
-  // مدیریت کلیک خارج برای بستن کارت
+  // کنترل کلیک بیرون کارت
   const onClickOutside = (e: MouseEvent) => {
-    if (!cardRef.value?.contains(e.target as Node)) closeCard();
+    if (!cardRef.value?.contains(e.target as Node) && props.isOpen) {
+      closeCard();
+    }
   };
+
+  watch(
+    () => props.isOpen,
+    (val) => {
+      if (val) openCard();
+      else closeCard();
+    }
+  );
 
   onMounted(() => {
     if (!cardRef.value) return;
@@ -107,16 +122,16 @@
     hammer.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL });
 
     hammer.on('pan', (ev) => {
-      let newX = isOpen.value ? -actionWidth + ev.deltaX : ev.deltaX;
+      let newX = (props.isOpen ? -actionWidth : 0) + ev.deltaX;
       if (newX > 0) newX = 0;
       if (newX < -actionWidth) newX = -actionWidth;
       x.value = newX;
       cardRef.value!.style.transform = `translateX(${x.value}px)`;
     });
 
-    hammer.on('panend', (ev) => {
-      if (x.value < -actionWidth / 2) openCard();
-      else closeCard();
+    hammer.on('panend', () => {
+      if (x.value < -actionWidth / 2) emit('opened', props.item.id);
+      else emit('closed', props.item.id);
     });
 
     document.addEventListener('click', onClickOutside);
@@ -136,6 +151,33 @@
     margin-bottom: 12px;
   }
 
+  .destination-actions {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    z-index: 1;
+  }
+
+  .action-btn {
+    width: 70px;
+    height: 100%;
+    border: none;
+    outline: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: white;
+  }
+  .action-btn.pin {
+    background: #3f51b5;
+  }
+  .action-btn.delete {
+    background: #f44336;
+  }
+
   .destination-item {
     height: fit-content;
     border: 1px solid transparent;
@@ -143,16 +185,15 @@
     position: relative;
     z-index: 2;
     border-radius: 12px;
+    transition: box-shadow 0.2s ease;
   }
 
   .destination-item__selected-item {
     border: 1px solid var(--ap-btn-primary);
   }
-
   .destination-item__content {
     height: 52px;
   }
-
   .destination-item__bank-logo {
     background-color: var(--ap-bg-surface);
     width: 24px;

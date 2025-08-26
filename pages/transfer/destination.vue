@@ -117,7 +117,8 @@
     if (openId.value && openId.value !== id) {
       openId.value = null; // کارت قبلی بسته شود
     }
-    openId.value = id;
+    // برای هماهنگی با animation بعدی nextTick
+    nextTick(() => (openId.value = id));
   };
 
   // بستن کارت
