@@ -40,7 +40,6 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted, onBeforeUnmount, watch } from 'vue';
   import Hammer from 'hammerjs';
 
   export interface RecipientItem {
@@ -53,7 +52,7 @@
     isFavorite?: boolean;
   }
 
-  const props = defineProps<{ item: RecipientItem; isSelected?: boolean; isOpen?: boolean }>();
+  const props = defineProps<{ item: RecipientItem; isSelected?: boolean }>();
   const emit = defineEmits<{
     (e: 'select', id: string | number): void;
     (e: 'delete', id: string | number): void;
@@ -67,54 +66,37 @@
 
   const cardRef = ref<HTMLElement | null>(null);
   const x = ref(0);
+  const isOpen = ref(false);
   const actionWidth = 140;
   let hammer: HammerManager | null = null;
 
-  // باز/بسته کردن کارت با easing نرم
-  const animateX = (to: number) => {
+  // انیمیشن نرم به مقصد
+  const animateTo = (to: number) => {
     if (!cardRef.value) return;
-    const start = x.value;
-    const change = to - start;
-    const duration = 200;
-    let startTime: number | null = null;
-
-    const step = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
-      x.value = start + change * ease;
-      cardRef.value!.style.transform = `translateX(${x.value}px)`;
-      if (progress < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
+    cardRef.value.style.transition = 'transform 0.2s ease';
+    x.value = to;
+    cardRef.value.style.transform = `translateX(${x.value}px)`;
+    setTimeout(() => {
+      if (cardRef.value) cardRef.value.style.transition = '';
+    }, 200);
   };
 
-  // بستن کارت
   const closeCard = () => {
-    animateX(0);
+    isOpen.value = false;
+    animateTo(0);
     emit('closed', props.item.id);
   };
 
-  // باز کردن کارت
   const openCard = () => {
-    animateX(-actionWidth);
+    isOpen.value = true;
+    animateTo(-actionWidth);
     emit('opened', props.item.id);
   };
 
-  // کنترل کلیک بیرون کارت
+  // مدیریت کلیک بیرون کارت
   const onClickOutside = (e: MouseEvent) => {
-    if (!cardRef.value?.contains(e.target as Node) && props.isOpen) {
-      closeCard();
-    }
+    if (!cardRef.value?.contains(e.target as Node)) closeCard();
   };
-
-  watch(
-    () => props.isOpen,
-    (val) => {
-      if (val) openCard();
-      else closeCard();
-    }
-  );
 
   onMounted(() => {
     if (!cardRef.value) return;
@@ -122,16 +104,17 @@
     hammer.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL });
 
     hammer.on('pan', (ev) => {
-      let newX = (props.isOpen ? -actionWidth : 0) + ev.deltaX;
+      let newX = isOpen.value ? -actionWidth + ev.deltaX : ev.deltaX;
       if (newX > 0) newX = 0;
       if (newX < -actionWidth) newX = -actionWidth;
       x.value = newX;
       cardRef.value!.style.transform = `translateX(${x.value}px)`;
     });
 
-    hammer.on('panend', () => {
-      if (x.value < -actionWidth / 2) emit('opened', props.item.id);
-      else emit('closed', props.item.id);
+    hammer.on('panend', (ev) => {
+      // وقتی درگ نیمه انجام شده، کارت به نزدیکترین حالت کامل باز/بسته میره
+      if (x.value < -actionWidth / 2) openCard();
+      else closeCard();
     });
 
     document.addEventListener('click', onClickOutside);
