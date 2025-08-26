@@ -52,7 +52,7 @@
     isFavorite?: boolean;
   }
 
-  const props = defineProps<{ item: RecipientItem; isSelected?: boolean }>();
+  const props = defineProps<{ item: RecipientItem; isSelected?: boolean; isOpen?: boolean }>();
   const emit = defineEmits<{
     (e: 'select', id: string | number): void;
     (e: 'delete', id: string | number): void;
@@ -66,7 +66,6 @@
 
   const cardRef = ref<HTMLElement | null>(null);
   const x = ref(0);
-  const isOpen = ref(false);
   const actionWidth = 140;
   let hammer: HammerManager | null = null;
 
@@ -81,21 +80,19 @@
     }, 200);
   };
 
-  const closeCard = () => {
-    isOpen.value = false;
-    animateTo(0);
-    emit('closed', props.item.id);
-  };
-
-  const openCard = () => {
-    isOpen.value = true;
-    animateTo(-actionWidth);
-    emit('opened', props.item.id);
-  };
+  // watch روی prop isOpen
+  watch(
+    () => props.isOpen,
+    (val) => {
+      if (val) animateTo(-actionWidth);
+      else animateTo(0);
+    },
+    { immediate: true }
+  );
 
   // مدیریت کلیک بیرون کارت
   const onClickOutside = (e: MouseEvent) => {
-    if (!cardRef.value?.contains(e.target as Node)) closeCard();
+    if (!cardRef.value?.contains(e.target as Node)) emit('closed', props.item.id);
   };
 
   onMounted(() => {
@@ -104,17 +101,17 @@
     hammer.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL });
 
     hammer.on('pan', (ev) => {
-      let newX = isOpen.value ? -actionWidth + ev.deltaX : ev.deltaX;
+      const currentOpen = props.isOpen ? -actionWidth : 0;
+      let newX = currentOpen + ev.deltaX;
       if (newX > 0) newX = 0;
       if (newX < -actionWidth) newX = -actionWidth;
       x.value = newX;
       cardRef.value!.style.transform = `translateX(${x.value}px)`;
     });
 
-    hammer.on('panend', (ev) => {
-      // وقتی درگ نیمه انجام شده، کارت به نزدیکترین حالت کامل باز/بسته میره
-      if (x.value < -actionWidth / 2) openCard();
-      else closeCard();
+    hammer.on('panend', () => {
+      if (x.value < -actionWidth / 2) emit('opened', props.item.id);
+      else emit('closed', props.item.id);
     });
 
     document.addEventListener('click', onClickOutside);
@@ -133,7 +130,6 @@
     border-radius: 12px;
     margin-bottom: 12px;
   }
-
   .destination-actions {
     position: absolute;
     right: 0;
@@ -144,7 +140,6 @@
     align-items: center;
     z-index: 1;
   }
-
   .action-btn {
     width: 70px;
     height: 100%;
@@ -160,7 +155,6 @@
   .action-btn.delete {
     background: #f44336;
   }
-
   .destination-item {
     height: fit-content;
     border: 1px solid transparent;
@@ -170,7 +164,6 @@
     border-radius: 12px;
     transition: box-shadow 0.2s ease;
   }
-
   .destination-item__selected-item {
     border: 1px solid var(--ap-btn-primary);
   }
