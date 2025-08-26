@@ -14,7 +14,7 @@
     title="ادامه"
     :disabled="!Number(amount)"
     class="submit-btn"
-    @click="router.push('destination')"
+    @click="router.push('/transfer/destination')"
   />
 </template>
 
