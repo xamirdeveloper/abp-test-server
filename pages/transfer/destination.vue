@@ -6,6 +6,7 @@
     :show-back="true"
   />
   <base-input v-model="destination" placeholder="شماره کارت یا شبا بدون IR" class="mb-6 px-5" />
+
   <div class="ap-page-wrapper">
     <div>
       <destination-item
@@ -15,18 +16,19 @@
         :isSelected="selectedId === item.id"
         :is-open="openId === item.id"
         @select="onSelect"
-        @open="onOpen"
-        @close="onClose"
+        @opened="onOpen"
+        @closed="onClose"
         @delete="onDelete"
         @edit="onEdit"
         class="mb-3"
       />
     </div>
     <destination-item-skltn />
+
     <base-select
       v-model="selectedTransferMethod"
       v-model:sheetVisible="isTransferMethodSheetOpen"
-      :items="transferٍMethods"
+      :items="transferMethods"
       :hide-input="true"
       title="لطفا شیوه انتقال را انتخاب کنید."
     />
@@ -37,10 +39,12 @@
   import { type RecipientItem } from '~/components/transfer/DestinationItem.vue';
 
   const isTransferMethodSheetOpen = ref<boolean>(true);
-  const selectedTransferMethod = ref();
+  const selectedTransferMethod = ref<string | null>(null);
   const destination = ref<string>('');
   const selectedId = ref<string | number | null>(null);
   const openId = ref<string | number | null>(null);
+
+  // داده‌های نمونه
   const fakeData = ref<RecipientItem[]>([
     {
       id: 1,
@@ -73,63 +77,10 @@
       iban: 'IR 450170000000302256482007',
       isFavorite: false,
     },
-    {
-      id: 4,
-      name: 'امیر سالاری',
-      avatarUrl: '/images/male-avatar.webp',
-      bankLogo: '/images/Saman.svg',
-      iban: 'IR 450170000000302256482007',
-      isFavorite: false,
-    },
-    {
-      id: 4,
-      name: 'امیر سالاری',
-      avatarUrl: '/images/male-avatar.webp',
-      bankLogo: '/images/Saman.svg',
-      iban: 'IR 450170000000302256482007',
-      isFavorite: false,
-    },
-    {
-      id: 4,
-      name: 'امیر سالاری',
-      avatarUrl: '/images/male-avatar.webp',
-      bankLogo: '/images/Saman.svg',
-      iban: 'IR 450170000000302256482007',
-      isFavorite: false,
-    },
-    {
-      id: 4,
-      name: 'امیر سالاری',
-      avatarUrl: '/images/male-avatar.webp',
-      bankLogo: '/images/Saman.svg',
-      iban: 'IR 450170000000302256482007',
-      isFavorite: false,
-    },
-    {
-      id: 4,
-      name: 'امیر سالاری',
-      avatarUrl: '/images/male-avatar.webp',
-      bankLogo: '/images/Saman.svg',
-      iban: 'IR 450170000000302256482007',
-      isFavorite: false,
-    },
-    {
-      id: 4,
-      name: 'امیر سالاری',
-      avatarUrl: '/images/male-avatar.webp',
-      bankLogo: '/images/Saman.svg',
-      iban: 'IR 450170000000302256482007',
-      isFavorite: false,
-    },
   ]);
 
-  const transferٍMethods = ref([
-    {
-      value: 'internal',
-      label: 'داخلی',
-      caption: 'بدون کارمزد',
-      subtitle: 'انتقال در لحظه',
-    },
+  const transferMethods = ref([
+    { value: 'internal', label: 'داخلی', caption: 'بدون کارمزد', subtitle: 'انتقال در لحظه' },
     {
       value: 'card_to_card',
       label: 'کارت به کارت',
@@ -156,22 +107,31 @@
     },
   ]);
 
+  // انتخاب کارت
   const onSelect = (id: string | number) => {
     selectedId.value = id;
   };
 
+  // باز شدن کارت (یک کارت در یک زمان)
   const onOpen = (id: string | number) => {
+    if (openId.value && openId.value !== id) {
+      openId.value = null; // کارت قبلی بسته شود
+    }
     openId.value = id;
   };
 
+  // بستن کارت
   const onClose = (id: string | number) => {
     if (openId.value === id) openId.value = null;
   };
 
+  // حذف کارت
   const onDelete = (id: string | number) => {
     fakeData.value = fakeData.value.filter((r) => r.id !== id);
+    if (openId.value === id) openId.value = null;
   };
 
+  // ویرایش کارت
   const onEdit = (id: string | number) => {
     console.log('edit item', id);
   };

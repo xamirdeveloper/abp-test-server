@@ -1,11 +1,5 @@
 <template>
   <div class="destination-swipe-wrapper">
-    <!-- اکشن‌ها -->
-    <div class="destination-actions">
-      <button class="action-btn pin" @click.stop="emit('pin', item.id)">📌</button>
-      <button class="action-btn delete" @click.stop="emit('delete', item.id)">🗑</button>
-    </div>
-
     <!-- کارت اصلی -->
     <div
       ref="cardRef"
@@ -40,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue';
+  import { ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue';
   import Hammer from 'hammerjs';
 
   export interface RecipientItem {
@@ -58,6 +52,8 @@
     (e: 'select', id: string | number): void;
     (e: 'delete', id: string | number): void;
     (e: 'pin', id: string | number): void;
+    (e: 'opened', id: string | number): void; // برای مدیریت باز بودن در پرنت
+    (e: 'closed', id: string | number): void;
   }>();
 
   const defaultAvatar = '/images/male-avatar.webp';
@@ -67,31 +63,68 @@
   const x = ref(0);
   const isOpen = ref(false);
   const actionWidth = 140;
+  let hammer: HammerManager | null = null;
+
+  // باز شدن/بستن کارت با easing نرم
+  const animateX = (to: number) => {
+    if (!cardRef.value) return;
+    const start = x.value;
+    const change = to - start;
+    const duration = 200; // ms
+    let startTime: number | null = null;
+
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress; // simple ease
+      x.value = start + change * ease;
+      cardRef.value!.style.transform = `translateX(${x.value}px)`;
+      if (progress < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+
+  const closeCard = () => {
+    isOpen.value = false;
+    animateX(0);
+    emit('closed', props.item.id);
+  };
+
+  const openCard = () => {
+    isOpen.value = true;
+    animateX(-actionWidth);
+    emit('opened', props.item.id);
+  };
+
+  // مدیریت کلیک خارج برای بستن کارت
+  const onClickOutside = (e: MouseEvent) => {
+    if (!cardRef.value?.contains(e.target as Node)) closeCard();
+  };
 
   onMounted(() => {
     if (!cardRef.value) return;
-    const hammer = new Hammer(cardRef.value);
+    hammer = new Hammer(cardRef.value);
     hammer.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL });
 
     hammer.on('pan', (ev) => {
       let newX = isOpen.value ? -actionWidth + ev.deltaX : ev.deltaX;
       if (newX > 0) newX = 0;
       if (newX < -actionWidth) newX = -actionWidth;
-      cardRef.value!.style.transform = `translateX(${newX}px)`;
+      x.value = newX;
+      cardRef.value!.style.transform = `translateX(${x.value}px)`;
     });
 
     hammer.on('panend', (ev) => {
-      if ((isOpen.value ? -actionWidth + ev.deltaX : ev.deltaX) < -actionWidth / 2) {
-        x.value = -actionWidth;
-        isOpen.value = true;
-      } else {
-        x.value = 0;
-        isOpen.value = false;
-      }
-      cardRef.value!.style.transition = 'transform 0.2s ease';
-      cardRef.value!.style.transform = `translateX(${x.value}px)`;
-      setTimeout(() => (cardRef.value!.style.transition = ''), 200);
+      if (x.value < -actionWidth / 2) openCard();
+      else closeCard();
     });
+
+    document.addEventListener('click', onClickOutside);
+  });
+
+  onBeforeUnmount(() => {
+    hammer?.destroy();
+    document.removeEventListener('click', onClickOutside);
   });
 </script>
 
@@ -103,33 +136,6 @@
     margin-bottom: 12px;
   }
 
-  .destination-actions {
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    z-index: 1;
-  }
-
-  .action-btn {
-    width: 70px;
-    height: 100%;
-    border: none;
-    outline: none;
-    font-size: 18px;
-    cursor: pointer;
-    color: white;
-  }
-  .action-btn.pin {
-    background: #3f51b5;
-  }
-  .action-btn.delete {
-    background: #f44336;
-  }
-
   .destination-item {
     height: fit-content;
     border: 1px solid transparent;
@@ -137,31 +143,26 @@
     position: relative;
     z-index: 2;
     border-radius: 12px;
-    transition: box-shadow 0.2s ease;
+  }
 
-    &__selected-item {
-      border: 1px solid var(--ap-btn-primary);
-    }
+  .destination-item__selected-item {
+    border: 1px solid var(--ap-btn-primary);
+  }
 
-    &__content {
-      height: 52px;
-    }
+  .destination-item__content {
+    height: 52px;
+  }
 
-    &__bank-logo {
-      background-color: var(--ap-bg-surface);
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-
-      img {
-        object-fit: cover;
-      }
-    }
+  .destination-item__bank-logo {
+    background-color: var(--ap-bg-surface);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: -5px;
+    left: 0;
   }
 </style>
