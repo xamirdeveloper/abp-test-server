@@ -29,7 +29,7 @@
         <span class="ap-txt-body-2 ap-text-secondary ap-me-6">بانک</span>
         <div class="d-flex align-center">
           <span class="ap-txt-body-1 ap-text-primary me-2">ایران زمین</span>
-          <img src="@/assets/images/Saman.svg" alt="bank logo" width="26" height="26" />
+          <img src="@/assets/images/saman.svg" alt="bank logo" width="26" height="26" />
         </div>
       </div>
       <div class="w-100 d-flex justify-space-between align-center py-1 mb-3">
@@ -53,14 +53,17 @@
         variant="text"
         height="86"
         class="d-block w-100 ap-bg-default ap-radius-12 transfer-method-btn"
+        @click="isTransferMethodSheetOpen = true"
       >
         <div class="w-100 d-flex align-center justify-space-between">
           <div class="d-flex flex-column align-start">
-            <div class="mb-3">
-              <span class="ap-txt-title-5 ap-text-primary me-3">بین بانکی (پل)</span>
-              <span class="ap-txt-caption ap-text-primary">کارمزد ۱۰,۰۰۰ ریال</span>
+            <div class="d-flex align-center mb-3">
+              <span class="ap-txt-title-5 ap-text-primary me-3">
+                {{ selectedItemObject?.label }}
+              </span>
+              <span class="ap-txt-caption ap-text-primary">{{ selectedItemObject?.caption }}</span>
             </div>
-            <p class="ap-txt-caption ap-text-tertiary">انتقال در امروز ۱۳:۱۵ بعد از ظهر</p>
+            <p class="ap-txt-caption ap-text-tertiary">{{ selectedItemObject?.subtitle }}</p>
           </div>
           <icon-chevron-down width="17" height="14" stroke="var(--ap-text-secondary)" />
         </div>
@@ -68,10 +71,55 @@
     </v-card>
   </div>
   <fixed-action-btn title="تایید" />
+  <base-select
+    v-model="selectedTransferMethod"
+    v-model:sheetVisible="isTransferMethodSheetOpen"
+    :items="transferMethods"
+    :hide-input="true"
+    title="لطفا شیوه انتقال را انتخاب کنید."
+  />
 </template>
 
 <script lang="ts" setup>
+  import type { SelectItems } from '~/components/base/BaseSelect.vue';
+
+  const isTransferMethodSheetOpen = ref<boolean>(false);
+  const selectedTransferMethod = ref<string | null>('internal');
   const addToList = ref<boolean>(true);
+  const transferMethods = ref<SelectItems[]>([
+    { value: 'internal', label: 'داخلی', caption: 'بدون کارمزد', subtitle: 'انتقال در لحظه' },
+    {
+      value: 'card_to_card',
+      label: 'کارت به کارت',
+      caption: 'کارمزد ۱۰,۰۰۰ ریال',
+      subtitle: 'انتقال در امروز ۱۳:۱۵ بعد از ظهر',
+    },
+    {
+      value: 'paya_instant',
+      label: 'بین بانکی آنی (پل)',
+      caption: 'کارمزد ۱۰,۰۰۰ ریال',
+      subtitle: 'انتقال در امروز ۱۳:۱۵ بعد از ظهر',
+    },
+    {
+      value: 'paya',
+      label: 'بین بانکی (پایا)',
+      caption: 'کارمزد ۱۰,۰۰۰ ریال',
+      subtitle: 'انتقال در امروز ۱۳:۱۵ بعد از ظهر',
+      disabled: true,
+    },
+    {
+      value: 'satna',
+      label: 'بین بانکی (ساتنا)',
+      caption: 'کارمزد ۱۰,۰۰۰ ریال',
+      subtitle: 'انتقال در امروز ۱۳:۱۵ بعد از ظهر',
+      disabled: true,
+    },
+  ]);
+
+  const selectedItemObject = computed<SelectItems | null>(() => {
+    if (!selectedTransferMethod.value) return null;
+    return transferMethods.value.find((i) => i.value === selectedTransferMethod.value) || null;
+  });
 </script>
 
 <style scoped>

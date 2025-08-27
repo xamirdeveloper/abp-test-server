@@ -6,15 +6,14 @@
     :show-back="true"
   />
   <base-input v-model="destination" placeholder="شماره کارت یا شبا بدون IR" class="mb-6 px-5" />
-
   <div class="ap-page-wrapper">
     <div>
       <destination-item
         v-for="item in fakeData"
         :key="item.id"
         :item="item"
-        :isSelected="selectedId === item.id"
-        :isOpen="openId === item.id"
+        :is-selected="selectedId === item.id"
+        :is-open="openId === item.id"
         @select="onSelect"
         @opened="onOpen"
         @closed="onClose"
@@ -24,21 +23,20 @@
       />
     </div>
     <destination-item-skltn />
-
-    <base-select
-      v-model="selectedTransferMethod"
-      v-model:sheetVisible="isTransferMethodSheetOpen"
-      :items="transferMethods"
-      :hide-input="true"
-      title="لطفا شیوه انتقال را انتخاب کنید."
-    />
   </div>
+  <base-select
+    v-model="selectedTransferMethod"
+    v-model:sheetVisible="isTransferMethodSheetOpen"
+    :items="transferMethods"
+    :hide-input="true"
+    title="لطفا شیوه انتقال را انتخاب کنید."
+  />
 </template>
 
 <script lang="ts" setup>
   import { type RecipientItem } from '~/components/transfer/DestinationItem.vue';
 
-  const isTransferMethodSheetOpen = ref(true);
+  const isTransferMethodSheetOpen = ref<boolean>(false);
   const selectedTransferMethod = ref<string | null>(null);
   const destination = ref('');
   const selectedId = ref<string | number | null>(null);
@@ -106,12 +104,10 @@
     },
   ]);
 
-  // انتخاب کارت
   const onSelect = (id: string | number) => {
     selectedId.value = id;
   };
 
-  // باز شدن کارت (یک کارت در یک زمان)
   const onOpen = (id: string | number) => {
     if (openId.value && openId.value !== id) openId.value = null;
     nextTick(() => {
@@ -119,18 +115,15 @@
     });
   };
 
-  // بستن کارت
   const onClose = (id: string | number) => {
     if (openId.value === id) openId.value = null;
   };
 
-  // حذف کارت
   const onDelete = (id: string | number) => {
     fakeData.value = fakeData.value.filter((r) => r.id !== id);
     if (openId.value === id) openId.value = null;
   };
 
-  // ویرایش کارت
   const onEdit = (id: string | number) => {
     console.log('edit item', id);
   };

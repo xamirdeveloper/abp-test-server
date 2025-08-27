@@ -12,6 +12,16 @@
       @click="toggleSheet(true)"
     >
       <template #append-icon>
+        <v-btn
+          v-if="clearable && !disabled && modelValue !== null"
+          icon
+          width="24"
+          height="24"
+          class="me-2"
+          @click.stop="clearValue"
+        >
+          <icon-close width="14" height="14" />
+        </v-btn>
         <icon-chevron-down
           stroke="#666D80"
           width="12"
@@ -20,15 +30,20 @@
         />
       </template>
     </base-input>
+
     <v-bottom-sheet v-model="sheetVisibleValue">
       <v-card class="ap-select__list-wrapper">
         <p class="ap-txt-label ap-text-primary ap-select__title mb-2 mt-8">{{ title }}</p>
-        <v-list class="ap-select__list">
+        <v-list class="ap-select__list" :class="listSpacingClass">
           <v-list-item
             v-for="item in items"
             :key="item.value"
-            :class="['ap-select__item', item.value === modelValue ? 'ap-select__active-item' : '']"
-            @click="selectItem(item)"
+            :class="[
+              'ap-select__item',
+              isSelected(item) ? 'ap-select__active-item' : '',
+              item.disabled ? 'ap-select__item--disabled' : '',
+            ]"
+            @click="!item.disabled && selectItem(item)"
           >
             <div class="d-flex justify-space-between align-center">
               <div>
@@ -36,7 +51,7 @@
                   <span
                     :class="[
                       'ap-txt-title-5',
-                      item.value === modelValue ? 'ap-text-primary' : 'ap-text-secondary',
+                      isSelected(item) ? 'ap-text-primary' : 'ap-text-secondary',
                       item.caption ? 'me-3' : '',
                     ]"
                   >
@@ -46,7 +61,7 @@
                     v-if="item.caption"
                     :class="[
                       'ap-txt-caption',
-                      item.value === modelValue ? 'ap-text-primary' : 'ap-text-secondary',
+                      isSelected(item) ? 'ap-text-primary' : 'ap-text-secondary',
                     ]"
                   >
                     {{ item.caption }}
@@ -56,7 +71,7 @@
                   {{ item.subtitle }}
                 </span>
               </div>
-              <div v-show="item.value === modelValue" class="ap-select__check-icon">
+              <div v-show="isSelected(item)" class="ap-select__check-icon">
                 <icon-check stroke="var(--ap-bg-surface)" width="16" height="16" />
               </div>
             </div>
@@ -73,10 +88,11 @@
     label: string;
     caption?: string;
     subtitle?: string;
+    disabled?: boolean;
   }
 
   interface SelectProps {
-    modelValue: string | number;
+    modelValue: string | number | null;
     items: SelectItems[];
     label?: string;
     placeholder?: string;
@@ -99,7 +115,7 @@
   });
 
   const emit = defineEmits<{
-    (e: 'update:modelValue', value: string | number): void;
+    (e: 'update:modelValue', value: string | number | null): void;
     (e: 'update:sheetVisible', value: boolean): void;
   }>();
 
@@ -120,15 +136,31 @@
     sheetVisibleValue.value = val;
   };
 
-  const selectedLabel = computed(() => {
-    return props.items.find((i) => i.value === props.modelValue)?.label || '';
+  const selectedItem = computed<SelectItems | null>(() => {
+    if (props.modelValue === null) return null;
+    return props.items.find((i) => i.value === props.modelValue) || null;
   });
+
+  const selectedLabel = computed(() => selectedItem.value?.label || '');
+
+  const isSelected = (item: SelectItems) => selectedItem.value?.value === item.value;
 
   const selectItem = (item: SelectItems) => {
     emit('update:modelValue', item.value);
     toggleSheet(false);
   };
+
+  const clearValue = () => {
+    emit('update:modelValue', null);
+  };
+
+  const listSpacingClass = computed(() => {
+    return props.items.length < 5 ? 'ap-select__list--spacious' : 'ap-select__list--compact';
+  });
+
+  defineExpose({ selectedItem });
 </script>
+
 <style scoped lang="scss">
   @use '@/assets/design-system/select.scss' as *;
 </style>

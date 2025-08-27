@@ -14,8 +14,6 @@
     "@pinia/nuxt": "^0.11.1",
     "@vite-pwa/nuxt": "^1.0.4",
     "@vueuse/core": "^13.3.0",
-    "@vueuse/gesture": "^2.0.0",
-    "@vueuse/motion": "^3.0.3",
     "axios": "^1.9.0",
     "browser-image-compression": "^2.0.2",
     "echarts": "^6.0.0",

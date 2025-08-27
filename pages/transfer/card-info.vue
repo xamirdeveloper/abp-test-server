@@ -37,7 +37,7 @@
   const cvv2 = ref();
   const expireDate = ref();
   const description = ref();
-  const selectedPurposes = ref();
+  const selectedPurposes = ref(null);
   const transferPurposes = ref([
     { value: 'insurance', label: 'امور بیمه خدمات' },
     { value: 'investment', label: 'امور سرمایه گذاری و بورس' },

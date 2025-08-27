@@ -1,7 +1,6 @@
 <template>
   <div class="destination-swipe-wrapper">
-    <!-- اکشن‌ها -->
-    <div class="destination-actions d-flex align-center ga-1">
+    <div class="destination-actions ga-1">
       <v-btn variant="text" class="action-btn ap-btn-error" @click.stop="emit('delete', item.id)">
         <icon-trash width="22" height="22" stroke="var(--ap-bg-surface)" />
       </v-btn>
@@ -9,11 +8,9 @@
         <icon-pin width="22" height="22" stroke="var(--ap-text-btn)" />
       </v-btn>
     </div>
-
-    <!-- کارت اصلی -->
     <div
       ref="cardRef"
-      class="d-block ap-bg-surface ap-radius-12 pa-3 w-100 destination-item"
+      class="d-block ap-bg-surface ap-radius-12 ps-3 py-3 pe-2 w-100 destination-item"
       :class="{ 'destination-item__selected-item': isSelected }"
       @click="emit('select', item.id)"
     >
@@ -30,9 +27,9 @@
             <img :src="item.bankLogo || defaultBankLogo" alt="bank logo" width="19" height="19" />
           </div>
         </div>
-        <div class="text-start flex-grow-1">
+        <div class="text-start d-flex flex-column flex-grow-1">
           <p class="ap-txt-body-1 ap-text-primary mb-1">{{ item.name }}</p>
-          <span class="ap-txt-body-2 ap-text-secondary">
+          <span class="ap-txt-body-2 ap-text-secondary destination-item__card-num">
             <template v-if="item.cardNumber">شماره کارت: {{ item.cardNumber }}</template>
             <template v-else-if="item.iban">شبا: {{ item.iban }}</template>
           </span>
@@ -56,7 +53,13 @@
     isFavorite?: boolean;
   }
 
-  const props = defineProps<{ item: RecipientItem; isSelected?: boolean; isOpen?: boolean }>();
+  interface Props {
+    item: RecipientItem;
+    isSelected?: boolean;
+    isOpen?: boolean;
+  }
+
+  const props = defineProps<Props>();
   const emit = defineEmits<{
     (e: 'select', id: string | number): void;
     (e: 'delete', id: string | number): void;
@@ -66,14 +69,13 @@
   }>();
 
   const defaultAvatar = '/images/male-avatar.webp';
-  const defaultBankLogo = '/images/saman.svg';
+  const defaultBankLogo = '/images/Saman.svg';
 
   const cardRef = ref<HTMLElement | null>(null);
   const x = ref(0);
-  const actionWidth = 65 * 2 + 9; // دو دکمه و gap 4px
+  const actionWidth = 65 * 2 + 9; // action btns size + btn count + 8px gap + 1px margin start
   let hammer: HammerManager | null = null;
 
-  // انیمیشن نرم به مقصد
   const animateTo = (to: number) => {
     if (!cardRef.value) return;
     cardRef.value.style.transition = 'transform 0.2s ease';
@@ -84,7 +86,6 @@
     }, 200);
   };
 
-  // watch روی prop isOpen
   watch(
     () => props.isOpen,
     (val) => {
@@ -93,7 +94,6 @@
     { immediate: true }
   );
 
-  // مدیریت کلیک بیرون کارت
   const onClickOutside = (e: MouseEvent) => {
     if (!cardRef.value?.contains(e.target as Node) && props.isOpen) emit('closed', props.item.id);
   };
@@ -115,7 +115,7 @@
 
     hammer.on('panend', () => {
       if (!cardRef.value) return;
-      cardRef.value.style.transition = 'transform 0.3s ease'; // برگشت ملایم‌تر
+      cardRef.value.style.transition = 'transform 0.3s ease';
 
       if (x.value < -actionWidth / 2) {
         x.value = -actionWidth;
@@ -145,8 +145,8 @@
     position: relative;
     overflow: hidden;
     border-radius: 12px;
-    margin-bottom: 12px;
   }
+
   .destination-actions {
     position: absolute;
     right: 0;
@@ -158,14 +158,13 @@
     z-index: 1;
     margin-inline-start: 1px;
   }
+
   .action-btn {
     width: 65px;
     height: calc(100% - 1px);
     border: none;
     outline: none;
-    font-size: 18px;
     cursor: pointer;
-    color: white;
     border-radius: 12px;
   }
 
@@ -177,23 +176,31 @@
     z-index: 2;
     border-radius: 12px;
     transition: box-shadow 0.2s ease;
-  }
-  .destination-item__selected-item {
-    border: 1px solid var(--ap-btn-primary);
-  }
-  .destination-item__content {
-    height: 52px;
-  }
-  .destination-item__bank-logo {
-    background-color: var(--ap-bg-surface);
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    bottom: -5px;
-    left: 0;
+
+    &__selected-item {
+      border: 1px solid var(--ap-btn-primary);
+    }
+
+    &__content {
+      height: 52px;
+    }
+
+    &__bank-logo {
+      background-color: var(--ap-bg-surface);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+    }
+
+    &__card-num {
+      word-wrap: unset;
+      word-break: keep-all;
+    }
   }
 </style>

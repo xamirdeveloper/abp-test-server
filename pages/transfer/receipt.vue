@@ -44,7 +44,7 @@
           <span class="ap-txt-body-2 ap-text-secondary ap-me-6">بانک</span>
           <div class="d-flex align-center">
             <span class="ap-txt-body-1 ap-text-primary me-2">ایران زمین</span>
-            <img src="@/assets/images/Saman.svg" alt="bank logo" width="26" height="26" />
+            <img src="@/assets/images/saman.svg" alt="bank logo" width="26" height="26" />
           </div>
         </div>
         <div class="w-100 d-flex justify-space-between align-center ap-py-2 mb-3">
@@ -69,7 +69,7 @@
           <span class="ap-txt-body-1 ap-text-primary">۸۷۳۵۱۲</span>
         </div>
       </v-card>
-      <svg
+      <!-- <svg
         class="card-subtract"
         xmlns="http://www.w3.org/2000/svg"
         width="351"
@@ -116,7 +116,8 @@
             />
           </filter>
         </defs>
-      </svg>
+      </svg> -->
+      <img src="@/assets/images/subtract.svg" class="card-subtract" />
     </div>
   </div>
 </template>
