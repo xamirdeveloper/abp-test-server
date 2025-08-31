@@ -8,22 +8,6 @@
   />
   <div class="ap-page-wrapper">
     <div class="form-wrapper">
-      <!-- <div class="mb-4">
-        <label class="d-block ap-txt-label ap-text-primary ap-mb-6">تاریخ پایان اعتبار</label>
-        <persian-date-picker
-          v-model="expireDate"
-          format="YYYY/MM/DD"
-          display-format="jYYYY/jMM/jDD"
-          locale="fa"
-          digits="fa"
-          input-class="ap-input__field"
-          calendar-class="ap-calendar"
-          :ap-input__field--error="!!error.expireDate"
-        />
-        <p :class="['ap-input__error', { 'ap-input__error--visible': !!error.expireDate }]">
-          {{ error.expireDate }}
-        </p>
-      </div> -->
       <base-input
         v-model="nationalCardSerial"
         :error="error.nationalCardSerial"
@@ -63,31 +47,17 @@
   import { useRouter } from 'vue-router';
 
   interface error {
-    // expireDate?: string;
     nationalCardSerial?: string;
   }
 
   const userDetailsStore = useUserDetailsStore();
   const router = useRouter();
 
-  // const expireDate = ref('');
   const nationalCardSerial = ref<string>('');
   const error = ref<error>({
-    // expireDate: '',
     nationalCardSerial: '',
   });
   const isLoading = ref<boolean>(false);
-
-  // watch(expireDate, () => (error.value.expireDate = ''));
-  // const validateExpireDate = () => {
-  //   if (!expireDate.value) {
-  //     error.value.expireDate = 'وارد کردن این فیلد الزامی است.';
-  //     return false;
-  //   }
-
-  //   error.value.expireDate = '';
-  //   return true;
-  // };
 
   watch(nationalCardSerial, () => (error.value.nationalCardSerial = ''));
   const validateNationalCardSerial = () => {

@@ -22,6 +22,9 @@ body {
 
 .ap-page-wrapper {
   padding-inline: 20px;
+  flex: 1;
+  scroll-behavior: smooth;
+  overflow-y: auto;
 }
 
 .v-bottom-sheet > .v-bottom-sheet__content.v-overlay__content {

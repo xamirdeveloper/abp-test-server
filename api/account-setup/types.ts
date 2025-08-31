@@ -28,6 +28,8 @@ export interface EstelamSabtResponse {
   birth_certificate_serial: string;
   father_name: string;
   full_name: string;
+  first_name: string;
+  last_name: string;
   gender: GenderCode;
 }
 
@@ -46,6 +48,11 @@ export interface Province {
   name: string;
 }
 
+export interface GetCitiesParams {
+  pId?: string | number;
+  term?: string;
+}
+
 export interface UserDetails {
   request_id: string;
   national_id: string;
@@ -61,8 +68,8 @@ export interface UserDetails {
   city: string;
   address: string;
   postal_code: string;
-  sub_economic: string;
-  occupation: string;
+  sub_economic?: string;
+  occupation?: string;
 }
 
 export interface SetPostalCodeParams {
@@ -72,7 +79,11 @@ export interface SetPostalCodeParams {
 
 export interface SetPostalCodeResponse {
   province: string;
+  province_code: string;
+  province_similarity_score: number;
   city: string;
+  city_code: string;
+  city_similarity_score: number;
   address: string;
 }
 

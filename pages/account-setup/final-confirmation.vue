@@ -40,6 +40,14 @@
       :loading="isLoading"
     />
     <base-input
+      v-model="birthDate"
+      label="تاریخ تولد"
+      type="text"
+      class="mb-4"
+      :disabled="canConfirm"
+      :loading="isLoading"
+    />
+    <base-input
       v-model="nationalId"
       label="کد ملی"
       type="number"
@@ -52,6 +60,21 @@
       label="شماره شناسنامه"
       type="number"
       class="mb-4"
+      :disabled="canConfirm"
+      :loading="isLoading"
+    />
+    <base-input
+      v-model="address"
+      label="آدرس"
+      type="text"
+      class="mb-4"
+      :disabled="canConfirm"
+      :loading="isLoading"
+    />
+    <base-input
+      v-model="postalCode"
+      label="کد پستی"
+      type="text"
       :disabled="canConfirm"
       :loading="isLoading"
     />
@@ -83,6 +106,7 @@
     setFinalize as setFinalizeApi,
   } from '~/api/account-setup';
   import { GENDER_LABELS } from '~/api/account-setup/types';
+  import { toPersianDigits } from '@/utils/convertor';
 
   const router = useRouter();
 
@@ -92,8 +116,11 @@
   const LastName = ref<string>('');
   const gender = ref<string>('');
   const fatherName = ref<string>('');
+  const birthDate = ref<string>('');
   const nationalId = ref<string>('');
   const birthCertificateNum = ref<string>('');
+  const address = ref<string>('');
+  const postalCode = ref<string>('');
   const canConfirm = ref<boolean>(false);
   const showSuccessModal = ref<boolean>(false);
   const showFailModel = ref<boolean>(false);
@@ -104,13 +131,16 @@
 
     try {
       isLoading.value = true;
-      nationalId.value = localStorage.getItem('national_id') || '';
       const response = await getUserAllDataApi(request_id);
       if (response.status === 'success' && response.data) {
         firstName.value = response.data.firstName;
         LastName.value = response.data.lastName;
         fatherName.value = response.data.fatherName;
         gender.value = GENDER_LABELS[response.data.gender];
+        nationalId.value = response.data.nationalId;
+        address.value = response.data.address;
+        postalCode.value = toPersianDigits(response.data.postalCode);
+        birthDate.value = toPersianDigits(response.data.birthday);
         birthCertificateNum.value =
           response.data.birthCertificateNo !== '0' ? response.data.birthCertificateNo : '___';
         canConfirm.value = true;
@@ -151,7 +181,8 @@
 
 <style scoped>
   .ap-page-wrapper {
-    height: calc(100% - 200px);
     overflow-y: auto;
+    flex: 1;
+    margin-bottom: 100px;
   }
 </style>

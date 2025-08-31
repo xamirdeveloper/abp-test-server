@@ -7,8 +7,16 @@
   />
   <div class="ap-page-wrapper">
     <base-input
-      v-model="fullName"
-      label="نام کامل"
+      v-model="firstName"
+      label="نام"
+      type="text"
+      class="mb-4"
+      :disabled="canConfirm"
+      :loading="isLoading"
+    />
+    <base-input
+      v-model="lastName"
+      label="نام خانوادگی"
       type="text"
       class="mb-4"
       :disabled="canConfirm"
@@ -64,7 +72,8 @@
   const router = useRouter();
 
   const isLoading = ref<boolean>(false);
-  const fullName = ref<string>('');
+  const firstName = ref<string>('');
+  const lastName = ref<string>('');
   const gender = ref<string>('');
   const fatherName = ref<string>('');
   const nationalId = ref<string>('');
@@ -80,7 +89,8 @@
       nationalId.value = localStorage.getItem('national_id') || '';
       const response = await estelamSabtApi(request_id);
       if (response.status === 'success' && response.data) {
-        fullName.value = response.data.full_name;
+        firstName.value = response.data.first_name;
+        lastName.value = response.data.last_name;
         fatherName.value = response.data.father_name;
         gender.value = GENDER_LABELS[response.data.gender];
         birthCertificateNum.value =
@@ -90,8 +100,8 @@
         userDetailsStore.updateFields({
           request_id: localStorage.getItem('request_id') || '',
           national_id: nationalId.value,
-          first_name: fullName.value,
-          last_name: fullName.value,
+          first_name: firstName.value,
+          last_name: lastName.value,
           gender: gender.value,
           father_name: fatherName.value,
           birth_certificate_number: response.data.birth_certificate_no,
@@ -113,8 +123,10 @@
 
 <style scoped>
   .ap-page-wrapper {
-    height: calc(100% - 200px);
     overflow-y: auto;
+    scroll-behavior: smooth;
+    margin-bottom: 100px;
+    flex: 1;
   }
 
   .ap-mb-6 {

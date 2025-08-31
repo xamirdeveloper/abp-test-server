@@ -32,7 +32,7 @@
       activeIcon: IconTransferFill,
     },
     { label: 'خانه', to: '/home', icon: IconHomeOutline, activeIcon: IconHomeFill },
-    { label: 'کارت', to: '/cart', icon: IconCartOutline, activeIcon: IconCartFill },
+    { label: 'کارت', to: '/card', icon: IconCartOutline, activeIcon: IconCartFill },
     {
       label: 'پروفایل',
       to: '/profile',

@@ -78,11 +78,7 @@
         throw new Error(res.message || 'خطا در ارسال کد');
       }
     } catch (err: any) {
-      if (err?.status === 'error') {
-        toast.error(err.message);
-      } else {
-        toast.error(err.message || 'خطای ناشناخته‌ای رخ داد.');
-      }
+      console.log(err);
     } finally {
       globalLoading.value = false;
       countdownLoading.value = false;
@@ -108,7 +104,7 @@
         throw new Error(res.message || 'کد وارد شده نادرست است');
       }
     } catch (err: any) {
-      toast.error(err?.message || 'خطا در تأیید کد');
+      console.log(err);
     } finally {
       confirming.value = false;
     }

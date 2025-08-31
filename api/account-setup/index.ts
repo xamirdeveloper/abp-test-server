@@ -6,6 +6,7 @@ import type {
   CreateRequestParams,
   CreateRequestResponse,
   EstelamSabtResponse,
+  GetCitiesParams,
   GetUserAllDataResponse,
   MobileNationalId,
   Province,
@@ -44,12 +45,14 @@ export const getProvinces = (): Promise<ApiResponse<Province[]>> => {
   return api.get('provinces/');
 };
 
-export const getCities = (pId: string): Promise<ApiResponse<Province[]>> => {
-  return api.get('cities/', { params: { pId } });
+export const getCities = (params?: GetCitiesParams): Promise<ApiResponse<Province[]>> => {
+  return api.get('cities/', { params });
 };
 
-export const getBirthIssuanceCities = (pId: string): Promise<ApiResponse<Province[]>> => {
-  return api.get('cities/birth/', { params: { pId } });
+export const getBirthIssuanceCities = (
+  params?: GetCitiesParams
+): Promise<ApiResponse<Province[]>> => {
+  return api.get('cities/birth/', { params });
 };
 
 export const setUserDetails = (payload: Partial<UserDetails>): Promise<ApiResponse> => {

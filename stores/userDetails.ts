@@ -17,8 +17,8 @@ export const useUserDetailsStore = defineStore('userDetails', {
     city: '',
     address: '',
     postal_code: '',
-    sub_economic: '',
-    occupation: '',
+    // sub_economic: '',
+    // occupation: '',
   }),
 
   actions: {
@@ -33,5 +33,9 @@ export const useUserDetailsStore = defineStore('userDetails', {
     reset() {
       this.$reset();
     },
+  },
+
+  persist: {
+    storage: sessionStorage,
   },
 });
