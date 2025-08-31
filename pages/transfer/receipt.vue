@@ -117,7 +117,7 @@
           </filter>
         </defs>
       </svg> -->
-      <img src="@/assets/images/subtract.svg" class="card-subtract" />
+      <img src="@/assets/images/Subtract.svg" class="card-subtract" />
     </div>
   </div>
 </template>
