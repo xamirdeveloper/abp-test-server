@@ -1,50 +1,86 @@
 <template>
   <div class="card-container">
-    <div :class="['card', { 'is-flipped': isFlipped }]">
+    <div
+      v-if="isCardEnabled"
+      class="card"
+      :class="{ flipped: isFlipped, animating: isAnimating }"
+      @transitionend="onAnimEnd"
+      @click="triggerFlip"
+    >
       <div class="card-face card-front">
         <img src="@/assets/images/card-front.png" alt="card-front" width="276" height="441" />
       </div>
-
       <div class="card-face card-back">
         <img src="@/assets/images/card-back.png" alt="card-back" width="276" height="441" />
       </div>
     </div>
-    <div class="card-info d-flex align-center justify-space-between">
-      <div>
-        <v-btn
-          icon
-          class="card-info__btn ap-me-10"
-          width="40"
-          height="40"
-          variant="text"
-          @click="isFlipped = !isFlipped"
-        >
-          <icon-rotate-left width="20" height="20" stroke="var(--ap-text-btn)" />
-        </v-btn>
-        <v-btn icon class="card-info__btn" width="40" height="40" variant="text">
-          <icon-share width="20" height="20" stroke="var(--ap-text-btn)" />
+    <div v-else class="card-face">
+      <div class="empty-card d-flex flex-column align-center">
+        <alibaba-pays-logo width="223" height="37" class="mt-12 mb-15" />
+        <v-btn variant="text" class="add-icon">
+          <icon-plus width="24" height="24" stroke="var(--ap-btn-primary)" />
         </v-btn>
       </div>
-      <div class="text-left">
-        <p class="ap-txt-title-4 ap-text-btn mb-1">{{ toPersianDigits(fullCardNumber) }}</p>
-        <p class="ap-txt-12 ap-fw-medium iban-text">{{ toPersianDigits(iban) }}</p>
+    </div>
+    <div class="card-info d-flex align-center">
+      <div v-if="isCardEnabled" class="d-flex align-center justify-space-between w-100">
+        <div>
+          <v-btn
+            icon
+            class="card-info__btn ap-me-10"
+            width="40"
+            height="40"
+            variant="text"
+            @click.stop="triggerFlip"
+          >
+            <icon-rotate-left width="20" height="20" stroke="var(--ap-text-btn)" />
+          </v-btn>
+          <v-btn icon class="card-info__btn" width="40" height="40" variant="text">
+            <icon-share width="20" height="20" stroke="var(--ap-text-btn)" />
+          </v-btn>
+        </div>
+        <div class="text-left">
+          <p class="ap-txt-title-4 ap-text-btn mb-1">{{ toPersianDigits(fullCardNumber) }}</p>
+          <p class="ap-txt-12 ap-fw-medium iban-text">{{ toPersianDigits(iban) }}</p>
+        </div>
+      </div>
+      <div v-else class="d-flex align-center justify-center w-100">
+        <p class="ap-txt-caption ap-text-primary text-center">
+          شما هنوز کارت خود را ثبت نکرده اید.
+        </p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref } from 'vue';
   import { toPersianDigits } from '@/utils/convertor';
 
+  interface Props {
+    isCardEnabled: boolean;
+  }
+  const props = defineProps<Props>();
+
   const isFlipped = ref(false);
+  const isAnimating = ref(false);
+
+  const triggerFlip = () => {
+    if (!props.isCardEnabled || isAnimating.value) return;
+    isAnimating.value = true;
+    isFlipped.value = !isFlipped.value;
+  };
+
+  const onAnimEnd = () => {
+    isAnimating.value = false;
+  };
+
   const fullCardNumber = '6219 1861 3213 1233';
   const iban = 'IR 18705375388913849319';
 </script>
 
 <style scoped lang="scss">
   .card-container {
-    perspective: 1000px;
+    perspective: 1200px;
     width: 100%;
     height: 470px;
     position: relative;
@@ -56,12 +92,18 @@
     width: 100%;
     height: 100%;
     position: relative;
-    transition: transform 0.6s;
     transform-style: preserve-3d;
-    z-index: 1;
+    transition:
+      transform 0.65s cubic-bezier(0.2, 0.6, 0.2, 1),
+      scale 0.25s ease-in-out;
+    cursor: pointer;
   }
 
-  .card.is-flipped {
+  .card.animating {
+    scale: 0.97;
+  }
+
+  .card.flipped {
     transform: rotateY(180deg);
   }
 
@@ -81,6 +123,28 @@
     transform: rotateY(180deg);
   }
 
+  .empty-card {
+    width: 276px;
+    height: 95%;
+    border-radius: 25px;
+    border: 2px solid var(--ap-btn-primary);
+    background: var(--ap-bg-default);
+    box-shadow: 0 4px 60px 0 rgba(0, 0, 0, 0.08);
+  }
+
+  .add-icon {
+    display: flex;
+    width: 74px;
+    height: 74px;
+    padding: 8px 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border-radius: 50%;
+    border: 3px solid var(--ap-btn-primary);
+    box-shadow: 0 1px 2px 0 rgba(13, 13, 18, 0.06);
+  }
+
   .card-info {
     border-radius: 0 0 20px 20px;
     border: 2px solid #fff;
@@ -88,7 +152,7 @@
     backdrop-filter: blur(12px);
     height: 100px;
     position: absolute;
-    padding: 24px 22px;
+    padding: 24px 26px;
     bottom: 0;
     right: 50%;
     transform: translate(50%);

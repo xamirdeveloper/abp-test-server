@@ -2,7 +2,7 @@
   <page-header title="کارت" :has-support="true" class="pt-3 mb-3" />
   <div class="ap-page-wrapper mb-5">
     <div class="d-flex flex-column align-center">
-      <card class="mb-6" />
+      <card class="mb-6" :is-card-enabled="true"/>
       <div class="d-flex align-center justify-center ga-5">
         <div class="d-flex flex-column align-center ga-3">
           <v-btn
