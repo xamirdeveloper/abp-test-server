@@ -165,8 +165,8 @@
     padding: 24px 26px;
     bottom: 0;
     right: 50%;
-    transform: translate(50%);
-    width: 95%;
+    transform: translateX(50%);
+    width: 330px;
     z-index: 2;
 
     &__block {
