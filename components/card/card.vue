@@ -18,11 +18,11 @@
       <div class="empty-card d-flex flex-column align-center">
         <alibaba-pays-logo width="223" height="37" class="mt-12 mb-15" />
         <v-btn variant="text" class="add-icon">
-          <icon-plus width="24" height="24" stroke="var(--ap-btn-primary)" />
+          <icon-plus width="24" height="24" stroke="#2D31FA" />
         </v-btn>
       </div>
     </div>
-    <div class="card-info d-flex align-center">
+    <div :class="['card-info d-flex align-center', isCardBlocked ? 'card-info__block' : '']">
       <div v-if="isCardEnabled" class="d-flex align-center justify-space-between w-100">
         <div>
           <v-btn
@@ -35,7 +35,14 @@
           >
             <icon-rotate-left width="20" height="20" stroke="var(--ap-text-btn)" />
           </v-btn>
-          <v-btn icon class="card-info__btn" width="40" height="40" variant="text">
+          <v-btn
+            icon
+            class="card-info__btn"
+            width="40"
+            height="40"
+            variant="text"
+            @click="isShareSheetOpen = true"
+          >
             <icon-share width="20" height="20" stroke="var(--ap-text-btn)" />
           </v-btn>
         </div>
@@ -50,6 +57,7 @@
         </p>
       </div>
     </div>
+    <card-share-bottom-sheet v-model="isShareSheetOpen" />
   </div>
 </template>
 
@@ -58,11 +66,16 @@
 
   interface Props {
     isCardEnabled: boolean;
+    isCardBlocked?: boolean;
   }
+
   const props = defineProps<Props>();
 
   const isFlipped = ref(false);
   const isAnimating = ref(false);
+  const isShareSheetOpen = ref<boolean>(false);
+  const fullCardNumber = ref<string>('6219 1861 3213 1233');
+  const iban = ref<string>('IR 18705375388913849319');
 
   const triggerFlip = () => {
     if (!props.isCardEnabled || isAnimating.value) return;
@@ -73,9 +86,6 @@
   const onAnimEnd = () => {
     isAnimating.value = false;
   };
-
-  const fullCardNumber = '6219 1861 3213 1233';
-  const iban = 'IR 18705375388913849319';
 </script>
 
 <style scoped lang="scss">
@@ -141,7 +151,7 @@
     align-items: center;
     gap: 8px;
     border-radius: 50%;
-    border: 3px solid var(--ap-btn-primary);
+    border: 3px solid #2d31fa;
     box-shadow: 0 1px 2px 0 rgba(13, 13, 18, 0.06);
   }
 
@@ -159,10 +169,19 @@
     width: 95%;
     z-index: 2;
 
+    &__block {
+      background: rgba(0, 0, 0, 0.4);
+    }
+
     &__btn {
       border: 1px solid var(--ap-text-btn, #fff);
       box-shadow: 0 1px 2px 0 rgba(13, 13, 18, 0.06);
     }
+  }
+
+  .theme-dark .card-info {
+    border: 2px solid #000;
+    background: rgba(0, 0, 0, 0.4);
   }
 
   .ap-me-10 {
@@ -171,5 +190,9 @@
 
   .iban-text {
     color: var(--ap-border-default);
+  }
+
+  .theme-dark .iban-text {
+    color: var(--ap-text-primary);
   }
 </style>

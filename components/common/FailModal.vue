@@ -6,7 +6,7 @@
     @action="emit('action')"
   >
     <template #default>
-      <div class="d-flex flex-column justify-center align-center">
+      <div class="d-flex flex-column justify-center align-center mt-11">
         <div class="position-relative mb-6">
           <icon-circles width="220" height="129" stroke="#f10b7c" />
           <div class="icon-wrapper d-flex justify-center align-center">

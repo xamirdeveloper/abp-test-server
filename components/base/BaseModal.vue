@@ -12,9 +12,7 @@
       >
         <icon-close stroke="var(--ap-text-primary)" width="22" height="22" />
       </v-btn>
-      <div
-        :class="['ap-modal__content', closable ? 'mt-11' : 'mt-0', actionText ? 'mb-6' : 'mb-0']"
-      >
+      <div :class="['ap-modal__content', actionText ? 'mb-6' : 'mb-0']">
         <slot />
       </div>
       <v-btn

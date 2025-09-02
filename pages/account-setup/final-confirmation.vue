@@ -90,6 +90,7 @@
     title="اطلاعات شما با موفقیت ثبت شد."
     description="ما اطلاعات را بررسی میکنیم لطفا منتظر دریافت پیامک باشید."
     actionText="بازگشت به برنامه"
+    @action="router.push('/waiting')"
   />
   <fail-modal
     v-model="showFailModel"

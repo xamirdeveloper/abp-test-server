@@ -104,6 +104,8 @@
           last_name: lastName.value,
           gender: gender.value,
           father_name: fatherName.value,
+          occupation: '230',
+          sub_economic: '110749',
           birth_certificate_number: response.data.birth_certificate_no,
         });
       } else {
