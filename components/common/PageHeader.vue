@@ -21,6 +21,17 @@
     </div>
     <div class="d-inline-flex">
       <v-btn
+        v-if="shoppingCart"
+        icon
+        :class="['ap-border-1 ap-border-accent-primary opacity-100', hasSupport ? 'ap-me-10' : '']"
+        width="40"
+        height="40"
+        variant="plain"
+      >
+        <v-badge color="error"></v-badge>
+        <icon-shopping-cart width="20" height="20" />
+      </v-btn>
+      <v-btn
         v-if="hasSupport"
         icon
         :class="[
@@ -73,6 +84,7 @@
     hasSupport?: boolean;
     isLight?: boolean;
     hasAlert?: boolean;
+    shoppingCart?: boolean;
   }
 
   const props = defineProps<PageHeaderProps>();

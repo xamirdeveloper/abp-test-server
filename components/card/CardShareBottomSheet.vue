@@ -46,6 +46,7 @@
 
   const toast = useToast();
 
+  const userName = ref<string>('امیرعلی سالاری');
   const items = ref<InfoItem[]>([
     { id: 'card', label: 'شماره کارت', value: '5894 6311 8252 4850' },
     { id: 'sheba', label: 'شماره شبا', value: 'IR 980130100000000346898407' },
@@ -67,11 +68,13 @@
   };
 
   const shareItem = async (item: InfoItem) => {
+    const textToShare = `${userName.value}\n${item.label}: ${item.value}\n\nعلی بابا پیز`;
+
     if (navigator.share) {
       try {
         await navigator.share({
           title: item.label,
-          text: `${item.label}: ${item.value}`,
+          text: textToShare,
         });
       } catch (e) {
         toast.error('عملیات لغو شد');
