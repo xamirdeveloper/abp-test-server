@@ -1,5 +1,11 @@
 <template>
-  <Page-header title="امکانات" class="pt-3" :has-support="true" :shopping-cart="true" />
+  <Page-header
+    title="سفر های خارجی"
+    class="pt-3"
+    :has-support="true"
+    :show-back="true"
+    :shopping-cart="true"
+  />
   <div class="ap-page-wrapper">
     <base-input v-model="searchValue" placeholder="جستجو امکانات, سرویس" class="mb-8">
       <template #prepend-icon>
@@ -8,7 +14,7 @@
     </base-input>
     <div v-for="category in categories" :key="category.id" class="category-section mb-8">
       <p class="ap-txt-title-4 ap-text-primary mb-4">{{ category.title }}</p>
-      <div class="items-row">
+      <div class="d-flex justify-space-between ga-4 flex-wrap">
         <service-item
           v-for="item in category.items"
           :key="item.id"
@@ -24,8 +30,6 @@
 </template>
 
 <script setup lang="ts">
-  definePageMeta({ layout: 'main' });
-
   import { useRouter } from 'vue-router';
   import IconChange from '~/components/icons/IconChange.vue';
   import IconGift from '~/components/icons/IconGift.vue';
@@ -57,39 +61,20 @@
   const searchValue = ref('');
   const categories = ref<ServiceCategory[]>([
     {
-      id: 'payment',
-      title: 'خدمات پرداخت بین المللی',
+      id: 'travel',
+      title: 'پرداخت سفر خارجی',
       color: '#CFF0FB',
       items: [
-        { id: 3, label: 'پرداخت سایت خارجی', icon: IconChange, status: ServiceStatus.Active },
-        {
-          id: 2,
-          label: 'پرداخت سفر خارجی',
-          icon: IconPayment,
-          status: ServiceStatus.Active,
-          action: () => router.push('/services/foreign-travel-payment'),
-        },
-        { id: 1, label: 'نقد کردن درآمد بین المللی', icon: IconGift, status: ServiceStatus.Active },
-      ],
-    },
-    {
-      id: 'shopping',
-      title: 'خدمات خرید بین المللی',
-      color: '#D4F7D0',
-      items: [
-        { id: 4, label: 'خرید از سایت ها', icon: IconPayment, status: ServiceStatus.Active },
-        { id: 5, label: 'تعرفه های گمرکی', icon: IconPayment, status: ServiceStatus.Disabled },
-        { id: 6, label: 'تعرفه های گمرکی', icon: IconPayment, status: ServiceStatus.Soon },
+        { id: 1, label: 'ویزا و سفارت', icon: IconGift, status: ServiceStatus.Active },
+        { id: 2, label: 'بلیت قطار', icon: IconPayment, status: ServiceStatus.Active },
+        { id: 3, label: 'رزرو هتل', icon: IconChange, status: ServiceStatus.Active },
+        { id: 4, label: 'بلیت اتوبوس', icon: IconGift, status: ServiceStatus.Active },
+        { id: 5, label: 'بلیت کشتی', icon: IconPayment, status: ServiceStatus.Active },
+        { id: 6, label: 'بلیت هواپیما', icon: IconChange, status: ServiceStatus.Active },
+        { id: 7, label: 'مسابقات ورزشی', icon: IconGift, status: ServiceStatus.Active },
+        { id: 8, label: 'بلیت فوتبال', icon: IconPayment, status: ServiceStatus.Active },
+        { id: 9, label: 'رزرو از airB&B', icon: IconChange, status: ServiceStatus.Active },
       ],
     },
   ]);
 </script>
-
-<style scoped>
-  .items-row {
-    display: flex;
-    gap: 24px;
-    overflow-x: auto;
-    overflow: hidden;
-  }
-</style>
