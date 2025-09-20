@@ -4,10 +4,10 @@
   "description": "Alibaba Pays App",
   "lang": "en",
   "start_url": "/",
-  "stand": "fullscreen",
+  "display": "fullscreen",
   "orientation": "portrait",
-  "background_color": "transparent",
-  "theme_color": "transparent",
+  "background_color": "#2d31fa",
+  "theme_color": "#2d31fa",
   "icons": [
     {
       "src": "/pwa-icons/pwa-icon-48x48.png",
