@@ -11,6 +11,7 @@ export default defineNuxtConfig({
   },
   modules: [
     '@pinia/nuxt',
+    '@vite-pwa/nuxt',
     (_options, nuxt) => {
       nuxt.hooks.hook('vite:extendConfig', (config) => {
         // @ts-expect-error
@@ -42,4 +43,12 @@ export default defineNuxtConfig({
     },
     { path: '~/components/icons', extensions: ['vue'], prefix: 'Icon' },
   ],
+   // @ts-expect-error
+    pwa: {
+    registerType: 'autoUpdate',
+    manifest: false,
+    devOptions: {
+      enabled: true
+    }
+  },
 });

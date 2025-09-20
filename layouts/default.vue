@@ -7,6 +7,12 @@
 </template>
 
 <script setup lang="ts">
+useHead({
+  link: [
+    { rel: 'manifest', href: '/manifest.json' }
+  ]
+})
+
   import { useApplyTheme } from '@/composables/useApplyTheme';
 
   useApplyTheme();
