@@ -17,7 +17,7 @@ useHead({
     { name: 'mobile-web-app-capable', content: 'yes' },
     { name: 'apple-mobile-web-app-capable', content: 'yes' },
     { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
-    { name: 'theme-color', content: '#2d31fa' }
+    { name: 'theme-color', content: 'transparent' }
   ]
 })
 
