@@ -40,3 +40,15 @@ export function isPersianText(text: string): boolean {
   const regex = /^[\u0600-\u06FF\s]+$/;
   return regex.test(text);
 }
+
+export function isPasswordValid(password: string): boolean {
+  const rules = [
+    password.length >= 8,
+    /[A-Z]/.test(password),
+    /[a-z]/.test(password),
+    /\d/.test(password),
+    /[!@#$%^&*(),.?":{}|<>_\-\\\/\[\];'`~+=]/.test(password), // حداقل یک کاراکتر خاص
+  ];
+
+  return rules.every((rule) => rule);
+}

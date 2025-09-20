@@ -1,34 +1,15 @@
 <template>
   <page-header class="pt-3" title="دریافت کد" :subtitle="subtitle" :show-back="true" />
-
   <div class="ap-page-wrapper text-center">
-    <v-otp-input
+    <base-otp-box
       v-model="otpCode"
       :disabled="globalLoading"
-      placeholder="-"
-      variant="plain"
-      dir="ltr"
-      class="mb-3"
-      locale="en"
-      length="6"
-    />
-
-    <count-down
-      v-if="!globalLoading"
       :loading="countdownLoading"
+      :length="6"
       @resend="sendOtp"
       @expired="handleExpired"
     />
-
-    <v-progress-circular
-      v-else
-      indeterminate
-      size="20"
-      color="var(--ap-btn-primary)"
-      class="d-block mx-auto my-4"
-    />
   </div>
-
   <fixed-action-btn
     title="تایید"
     :disabled="!canConfirm"
@@ -38,13 +19,10 @@
 </template>
 
 <script setup lang="ts">
-  import { useRouter } from 'vue-router';
-  import { useToast } from 'vue-toastification';
   import { sendOtp as sendOtpApi, confirmOtp as confirmOtpApi } from '@/api/account-setup';
   import { useOtpStore } from '@/stores/otp';
 
   const router = useRouter();
-  const toast = useToast();
   const otpStore = useOtpStore();
 
   const otpCode = ref('');
@@ -99,7 +77,8 @@
 
       if (res.status === 'success') {
         otpStore.markVerified();
-        router.push('aggrement');
+        otpStore.clear();
+        router.push('account-setup/aggrement');
       } else {
         throw new Error(res.message || 'کد وارد شده نادرست است');
       }

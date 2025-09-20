@@ -76,9 +76,7 @@
 
 <style scoped>
   .ap-page-wrapper {
-    height: calc(100vh - 230px);
-    overflow-y: auto;
-    scroll-behavior: smooth;
+   margin-bottom: 96px;
   }
 
   .agreement {

@@ -8,10 +8,15 @@ import type {
   EstelamSabtResponse,
   GetCitiesParams,
   GetUserAllDataResponse,
+  LoginParams,
+  LoginResponse,
   MobileNationalId,
   Province,
   SetPostalCodeParams,
   SetPostalCodeResponse,
+  SetUsernamePasswordStepOneResponse,
+  SetUsernamePasswordStepThreeParams,
+  SetUsernamePasswordStepTwoParams,
   UserDetails,
 } from './types';
 
@@ -55,7 +60,7 @@ export const getBirthIssuanceCities = (
   return api.get('cities/birth/', { params });
 };
 
-export const setUserDetails = (payload: Partial<UserDetails>): Promise<ApiResponse> => {
+export const setUserDetails = (payload: UserDetails): Promise<ApiResponse> => {
   return api.post('set-user-details/', payload);
 };
 
@@ -81,6 +86,28 @@ export const setFinalize = (request_id: string): Promise<ApiResponse> => {
   return api.post('set-finalize/', { request_id: request_id });
 };
 
-export const setUsernamePasswordStepOne = (payload: MobileNationalId): Promise<ApiResponse> => {
+export const setUsernamePasswordStepOne = (
+  payload: MobileNationalId
+): Promise<ApiResponse<SetUsernamePasswordStepOneResponse>> => {
   return api.post('set-username-password-step1/', payload);
+};
+
+export const setUsernamePasswordStepTwo = (
+  payload: SetUsernamePasswordStepTwoParams
+): Promise<ApiResponse> => {
+  return api.post('set-username-password-step2/', payload);
+};
+
+export const setUsernamePasswordStepThree = (
+  payload: SetUsernamePasswordStepThreeParams
+): Promise<ApiResponse> => {
+  return api.post('set-username-password-step3/', payload);
+};
+
+export const login = (payload: LoginParams): Promise<ApiResponse<LoginResponse>> => {
+  return api.post('login/', payload, { withCredentials: true });
+};
+
+export const refresh = (): Promise<ApiResponse<LoginResponse>> => {
+  return api.post('refresh/', { withCredentials: true });
 };

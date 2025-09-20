@@ -12,9 +12,14 @@
         <icon-search width="18" height="18" stroke="var(--ap-text-secondary)" />
       </template>
     </base-input>
-    <div v-for="category in categories" :key="category.id" class="category-section mb-8">
+    <div v-for="category in categories" :key="category.id" class="category-section">
       <p class="ap-txt-title-4 ap-text-primary mb-4">{{ category.title }}</p>
-      <div class="d-flex justify-space-between ga-4 flex-wrap">
+      <div
+        :class="[
+          'd-flex ga-4 flex-wrap align-start',
+          category.items.length > 2 ? 'justify-space-between' : 'justify-start',
+        ]"
+      >
         <service-item
           v-for="item in category.items"
           :key="item.id"
@@ -65,15 +70,16 @@
       title: 'پرداخت سفر خارجی',
       color: '#CFF0FB',
       items: [
-        { id: 1, label: 'ویزا و سفارت', icon: IconGift, status: ServiceStatus.Active },
-        { id: 2, label: 'بلیت قطار', icon: IconPayment, status: ServiceStatus.Active },
         { id: 3, label: 'رزرو هتل', icon: IconChange, status: ServiceStatus.Active },
-        { id: 4, label: 'بلیت اتوبوس', icon: IconGift, status: ServiceStatus.Active },
-        { id: 5, label: 'بلیت کشتی', icon: IconPayment, status: ServiceStatus.Active },
-        { id: 6, label: 'بلیت هواپیما', icon: IconChange, status: ServiceStatus.Active },
-        { id: 7, label: 'مسابقات ورزشی', icon: IconGift, status: ServiceStatus.Active },
-        { id: 8, label: 'بلیت فوتبال', icon: IconPayment, status: ServiceStatus.Active },
-        { id: 9, label: 'رزرو از airB&B', icon: IconChange, status: ServiceStatus.Active },
+        { id: 2, label: 'بلیت قطار', icon: IconPayment, status: ServiceStatus.Active },
+        { id: 2, label: 'بلیط نمایشگاه ', icon: IconPayment, status: ServiceStatus.Active },
+        // { id: 1, label: 'ویزا و سفارت', icon: IconGift, status: ServiceStatus.Active },
+        // { id: 4, label: 'بلیت اتوبوس', icon: IconGift, status: ServiceStatus.Active },
+        // { id: 5, label: 'بلیت کشتی', icon: IconPayment, status: ServiceStatus.Active },
+        // { id: 6, label: 'بلیت هواپیما', icon: IconChange, status: ServiceStatus.Active },
+        // { id: 7, label: 'مسابقات ورزشی', icon: IconGift, status: ServiceStatus.Active },
+        // { id: 8, label: 'بلیت فوتبال', icon: IconPayment, status: ServiceStatus.Active },
+        // { id: 9, label: 'رزرو از airB&B', icon: IconChange, status: ServiceStatus.Active },
       ],
     },
   ]);

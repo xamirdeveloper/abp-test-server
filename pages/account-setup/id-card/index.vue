@@ -33,7 +33,7 @@
 
   const recognizeIdCardStatus = () => {
     if (selected.value === 1) {
-      router.push('card-info');
+      router.push('card-serial');
     } else {
       router.push('card-tracking-code');
     }

@@ -135,7 +135,7 @@
         localStorage.setItem('national_id', nationalId.value?.toString() || '');
         localStorage.setItem('request_id', response.data.request_id);
         localStorage.setItem('user-mobile', mobile.value?.toString() || '');
-        router.push({ name: 'otp' });
+        router.push('/account-setup/bank-auth-otp');
       }
     } catch (err) {
       console.error(err);
@@ -146,8 +146,6 @@
 </script>
 
 <style scoped lang="scss">
-  @use '@/assets/design-system/input.scss' as *;
-
   .ap-mb-6 {
     margin-bottom: 6px;
   }

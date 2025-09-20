@@ -11,4 +11,6 @@ export interface BaseInputProps {
   id?: string;
   maxlength?: number;
   readonly?: boolean;
+  autocomplete?: string;
+  name?: string;
 }

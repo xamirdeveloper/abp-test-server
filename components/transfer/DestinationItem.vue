@@ -104,17 +104,43 @@
     hammer = new Hammer(cardRef.value);
     hammer.get('pan').set({ direction: Hammer.DIRECTION_HORIZONTAL });
 
+    let isHorizontalPan = false;
+
+    hammer.on('panstart', (ev) => {
+      const dx = ev.deltaX;
+      const dy = ev.deltaY;
+
+      // devicePixelRatio رو لحاظ می‌کنیم تا روی همه اسکرین‌ها smooth باشه
+      const pixelRatio = window.devicePixelRatio || 1;
+      const minThreshold = 3 * pixelRatio; // مقدار حداقل حساسیت
+      const maxThreshold = 150 * pixelRatio; // مقدار حداکثر برای پرش‌های بزرگ
+
+      if (Math.abs(dx) < minThreshold || Math.abs(dx) > maxThreshold) {
+        isHorizontalPan = false;
+        return;
+      }
+
+      // نسبت dx به dy برای تشخیص افقی بودن
+      isHorizontalPan = Math.abs(dx) > Math.abs(dy) * 1.5;
+    });
+
     hammer.on('pan', (ev) => {
+      if (!isHorizontalPan) return;
+
       const currentOpen = props.isOpen ? -actionWidth : 0;
       let newX = currentOpen + ev.deltaX;
+
       if (newX > 0) newX = 0;
       if (newX < -actionWidth) newX = -actionWidth;
+
       x.value = newX;
       cardRef.value!.style.transform = `translateX(${x.value}px)`;
     });
 
     hammer.on('panend', () => {
+      if (!isHorizontalPan) return;
       if (!cardRef.value) return;
+
       cardRef.value.style.transition = 'transform 0.3s ease';
 
       if (x.value < -actionWidth / 2) {
@@ -176,6 +202,7 @@
     z-index: 2;
     border-radius: 12px;
     transition: box-shadow 0.2s ease;
+    will-change: scroll-position;
 
     &__selected-item {
       border: 1px solid var(--ap-btn-primary);

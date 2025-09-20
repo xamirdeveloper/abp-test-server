@@ -23,9 +23,13 @@
       :removable="true"
       :src="birthCertificate"
       @click="
-        openCamera('birthCard', 'شناسنامه', 'لطفا تصویر شناسنامه خود را اسکن و یا بارگذاری  کنید.')
+        openCamera(
+          'birthCertificate',
+          'شناسنامه',
+          'لطفا تصویر شناسنامه خود را اسکن و یا بارگذاری  کنید.'
+        )
       "
-      @remove="uploadStore.clearFile('birthCard')"
+      @remove="uploadStore.clearFile('birthCertificate')"
     />
   </div>
   <fixed-action-btn
@@ -107,7 +111,6 @@
       router.push('/signature-upload');
     } catch (error) {
       console.error(error);
-      toast.error('خطا در آپلود تصاویر. لطفا مجددا تلاش کنید.');
     } finally {
       isLoading.value = false;
     }
@@ -116,7 +119,6 @@
 
 <style scoped>
   .ap-page-wrapper {
-    height: calc(100% - 230px);
-    overflow-y: auto;
+    margin-bottom: 96px;
   }
 </style>

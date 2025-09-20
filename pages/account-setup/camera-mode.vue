@@ -8,7 +8,7 @@
       :is-light="true"
     />
 
-    <div class="ap-upload-card ap-page-wrapper">
+    <div class="ap-upload-card">
       <div class="ap-upload-card__border">
         <video
           v-if="!capturedImage"
@@ -116,8 +116,6 @@
 </script>
 
 <style scoped lang="scss">
-  @use '@/assets/design-system/upload-file.scss' as *;
-
   .camera-mode {
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(2.5px);
@@ -143,6 +141,7 @@
     position: fixed;
     top: 50%;
     transform: translateY(-50%);
+    padding-inline: 20px;
 
     &__video {
       width: 100%;

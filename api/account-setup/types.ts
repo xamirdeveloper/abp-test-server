@@ -116,3 +116,29 @@ export interface MobileNationalId {
   mobile: string;
   national_id: string;
 }
+
+export interface SetUsernamePasswordStepOneResponse {
+  timestamp: string;
+  expiretime: string;
+}
+
+export interface SetUsernamePasswordStepTwoParams {
+  mobile: string;
+  code: string;
+}
+
+export interface SetUsernamePasswordStepThreeParams {
+  mobile: string;
+  uname: string;
+  password: string;
+  confirm_pass: string;
+}
+
+export interface LoginParams {
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  access: string;
+}

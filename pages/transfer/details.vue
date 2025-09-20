@@ -124,10 +124,7 @@
 
 <style scoped>
   .ap-page-wrapper {
-    overflow-y: auto;
-    scroll-behavior: smooth;
-    margin-bottom: 100px;
-    flex: 1;
+    margin-bottom: 96px;
   }
 
   .icon-wrapper {

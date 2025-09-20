@@ -107,7 +107,6 @@
       router.push('/account-setup/signature-upload');
     } catch (error) {
       console.error(error);
-      toast.error('خطا در آپلود تصاویر. لطفا مجددا تلاش کنید.');
     } finally {
       isLoading.value = false;
     }
@@ -116,7 +115,6 @@
 
 <style scoped>
   .ap-page-wrapper {
-    height: calc(100% - 230px);
-    overflow-y: auto;
+    margin-bottom: 96px;
   }
 </style>

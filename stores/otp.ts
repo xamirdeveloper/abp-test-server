@@ -1,24 +1,40 @@
 import { defineStore } from 'pinia';
 
+type OtpFlowType = 'bank' | 'backend' | null;
+
 interface OtpState {
+  flowType: OtpFlowType;
   requestId: string | null;
   expireTime: number | null;
   verified: boolean;
+  meta: {
+    mobile?: string;
+  };
 }
 
 export const useOtpStore = defineStore('otp', {
   state: (): OtpState => ({
+    flowType: null,
     requestId: null,
     expireTime: null,
     verified: false,
+    meta: {},
   }),
 
   actions: {
     setRequestId(id: string | null) {
+      this.flowType = 'bank';
       this.requestId = id;
     },
     clearRequestId() {
       this.requestId = null;
+    },
+    setMobile(mobile: string) {
+      this.flowType = 'backend';
+      this.meta.mobile = mobile;
+    },
+    clearMobile() {
+      this.meta.mobile = undefined;
     },
     setExpireTimeAbsolute(timestamp: number) {
       this.expireTime = timestamp;
@@ -41,9 +57,11 @@ export const useOtpStore = defineStore('otp', {
       localStorage.removeItem('otp_expire');
     },
     clear() {
+      this.flowType = null;
       this.requestId = null;
       this.expireTime = null;
       this.verified = false;
+      this.meta = {};
       localStorage.removeItem('otp_expire');
     },
     markVerified() {

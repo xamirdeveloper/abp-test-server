@@ -20,7 +20,7 @@
       <li class="ap-txt-body-1 ap-text-secondary">با رعایت فاصله مناسب از دوربین</li>
     </ul>
   </div>
-  <fixed-action-btn title="من آماده ام" @click="router.push('recording')" />
+  <fixed-action-btn title="من آماده ام" @click="router.push('video/recording')" />
 </template>
 
 <script lang="ts" setup>
@@ -31,8 +31,7 @@
 
 <style lang="scss" scoped>
   .ap-page-wrapper {
-    height: calc(100% - 210px);
-    overflow-y: auto;
+    margin-bottom: 96px;
   }
 
   .sample-img {

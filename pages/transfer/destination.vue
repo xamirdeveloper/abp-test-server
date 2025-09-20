@@ -7,22 +7,7 @@
   />
   <base-input v-model="destination" placeholder="شماره کارت یا شبا بدون IR" class="mb-6 px-5" />
   <div class="ap-page-wrapper">
-    <div>
-      <destination-item
-        v-for="item in fakeData"
-        :key="item.id"
-        :item="item"
-        :is-selected="selectedId === item.id"
-        :is-open="openId === item.id"
-        @select="onSelect"
-        @opened="onOpen"
-        @closed="onClose"
-        @delete="onDelete"
-        @edit="onEdit"
-        class="mb-3"
-      />
-    </div>
-    <destination-item-skltn />
+    <destination-list :items="fakeData" @select="onSelect" @delete="onDelete" @edit="onEdit" />
   </div>
   <base-select
     v-model="selectedTransferMethod"
@@ -39,8 +24,7 @@
   const isTransferMethodSheetOpen = ref<boolean>(false);
   const selectedTransferMethod = ref<string | null>(null);
   const destination = ref('');
-  const selectedId = ref<string | number | null>(null);
-  const openId = ref<string | number | null>(null);
+  const searching = ref<boolean>(false);
 
   const fakeData = ref<RecipientItem[]>([
     {
@@ -65,6 +49,62 @@
       avatarUrl: '/images/male-avatar.webp',
       bankLogo: '/images/Saman.svg',
       cardNumber: '5022 2910 4457 1122',
+    },
+    {
+      id: 4,
+      name: 'امیر سالاری',
+      avatarUrl: '/images/male-avatar.webp',
+      bankLogo: '/images/Saman.svg',
+      iban: 'IR 450170000000302256482007',
+      isFavorite: false,
+    },
+    {
+      id: 4,
+      name: 'امیر سالاری',
+      avatarUrl: '/images/male-avatar.webp',
+      bankLogo: '/images/Saman.svg',
+      iban: 'IR 450170000000302256482007',
+      isFavorite: false,
+    },
+    {
+      id: 4,
+      name: 'امیر سالاری',
+      avatarUrl: '/images/male-avatar.webp',
+      bankLogo: '/images/Saman.svg',
+      iban: 'IR 450170000000302256482007',
+      isFavorite: false,
+    },
+    {
+      id: 4,
+      name: 'امیر سالاری',
+      avatarUrl: '/images/male-avatar.webp',
+      bankLogo: '/images/Saman.svg',
+      iban: 'IR 450170000000302256482007',
+      isFavorite: false,
+    },
+    {
+      id: 4,
+      name: 'امیر سالاری',
+      avatarUrl: '/images/male-avatar.webp',
+      bankLogo: '/images/Saman.svg',
+      iban: 'IR 450170000000302256482007',
+      isFavorite: false,
+    },
+    {
+      id: 4,
+      name: 'امیر سالاری',
+      avatarUrl: '/images/male-avatar.webp',
+      bankLogo: '/images/Saman.svg',
+      iban: 'IR 450170000000302256482007',
+      isFavorite: false,
+    },
+    {
+      id: 4,
+      name: 'امیر سالاری',
+      avatarUrl: '/images/male-avatar.webp',
+      bankLogo: '/images/Saman.svg',
+      iban: 'IR 450170000000302256482007',
+      isFavorite: false,
     },
     {
       id: 4,
@@ -105,35 +145,14 @@
   ]);
 
   const onSelect = (id: string | number) => {
-    selectedId.value = id;
-  };
-
-  const onOpen = (id: string | number) => {
-    if (openId.value && openId.value !== id) openId.value = null;
-    nextTick(() => {
-      openId.value = id;
-    });
-  };
-
-  const onClose = (id: string | number) => {
-    if (openId.value === id) openId.value = null;
+    console.log('Selected item:', id);
   };
 
   const onDelete = (id: string | number) => {
     fakeData.value = fakeData.value.filter((r) => r.id !== id);
-    if (openId.value === id) openId.value = null;
   };
 
   const onEdit = (id: string | number) => {
-    console.log('edit item', id);
+    console.log('Edit item:', id);
   };
 </script>
-
-<style scoped>
-  .ap-page-wrapper {
-    overflow-y: auto;
-    scroll-behavior: smooth;
-    margin-bottom: 20px;
-    flex: 1;
-  }
-</style>

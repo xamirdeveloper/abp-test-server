@@ -27,21 +27,20 @@
 </template>
 
 <script lang="ts" setup>
-  import { useRouter } from 'vue-router';
   import { isValidIranianMobile, isValidIranianNationalId } from '@/utils/validators';
   import { setUsernamePasswordStepOne } from '~/api/account-setup';
-  import { useToast } from 'vue-toastification';
+  import { useOtpStore } from '@/stores/otp';
 
   interface error {
     nationalId?: string;
     mobile?: string;
   }
 
+  const otpStore = useOtpStore();
   const router = useRouter();
-  const toast = useToast();
 
-  const nationalId = ref();
-  const mobile = ref();
+  const nationalId = ref<string>('');
+  const mobile = ref<string>('');
   const error = ref<error>({
     nationalId: '',
     mobile: '',
@@ -85,29 +84,52 @@
     return isValid;
   };
 
+  const hasValidExpire = () => {
+    const previousMobile = otpStore.meta.mobile;
+    const isNewRequest = previousMobile && previousMobile !== mobile.value;
+
+    if (isNewRequest) {
+      otpStore.clearExpireTime();
+    }
+
+    otpStore.setMobile(mobile.value);
+    const hasValidExpire = otpStore.loadExpireTime();
+
+    return hasValidExpire;
+  };
+
   const submitForm = async () => {
     const isValid = validateForm();
     if (!isValid) return;
 
-    try {
-      isLoading.value = true;
+    const isExpireValid = hasValidExpire();
+    if (!isExpireValid) {
+      try {
+        isLoading.value = true;
 
-      const payload = {
-        national_id: nationalId.value,
-        mobile: mobile.value,
-      };
+        const payload = {
+          national_id: nationalId.value,
+          mobile: mobile.value,
+        };
 
-      const response = await setUsernamePasswordStepOne(payload);
+        const response = await setUsernamePasswordStepOne(payload);
 
-      if (response.status === 'success') {
-        localStorage.setItem('national_id', nationalId.value?.toString() || '');
-        localStorage.setItem('user-mobile', mobile.value?.toString() || '');
-        router.push({ name: 'otp' });
+        if ((response.status === 'success', response.data)) {
+          localStorage.setItem('national_id', nationalId.value);
+          localStorage.setItem('user-mobile', mobile.value);
+          const expireISO = response.data.expiretime;
+          const expireTimestamp = new Date(expireISO).getTime();
+          otpStore.setMobile(mobile.value);
+          otpStore.setExpireTimeAbsolute(expireTimestamp);
+          router.push('/account-setup/set-username-password/otp');
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        isLoading.value = false;
       }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      isLoading.value = false;
+    } else {
+      router.push('/account-setup/set-username-password/otp');
     }
   };
 </script>

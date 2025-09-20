@@ -115,7 +115,7 @@
     () => circumference - (progress.value / duration) * circumference
   );
   const canStartRecording = computed(() => {
-    return isCameraReady.value && !isLoading.value && !isRecording.value;
+    return isCameraReady.value && !isLoading.value && !isRecording.value && caption.value;
   });
 
   let interval: ReturnType<typeof setInterval>;
@@ -263,7 +263,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
     height: 100%;
 
     &__circle {

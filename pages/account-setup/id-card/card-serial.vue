@@ -13,7 +13,7 @@
         :error="error.nationalCardSerial"
         :maxlength="10"
         label="شماره سریال"
-        @input="nationalCardSerial = nationalCardSerial.replace(/[^A-Za-z0-9]/g, '')"
+        @input="handleSerialInput"
       />
     </div>
     <div class="d-flex justify-center w-100">
@@ -59,19 +59,30 @@
   });
   const isLoading = ref<boolean>(false);
 
+  const handleSerialInput = () => {
+    if (!nationalCardSerial.value) return;
+
+    let val = toEnglishDigits(nationalCardSerial.value);
+    val = val.replace(/[^A-Za-z0-9]/g, '');
+    val = val.toUpperCase();
+
+    nationalCardSerial.value = val;
+  };
+
   watch(nationalCardSerial, () => (error.value.nationalCardSerial = ''));
   const validateNationalCardSerial = () => {
     const serial = nationalCardSerial.value?.trim() || '';
-    const serialRegex = /^[A-Za-z0-9]{6,10}$/;
 
     if (!serial) {
       error.value.nationalCardSerial = 'وارد کردن این فیلد الزامی است.';
       return false;
     }
 
+    const serialRegex = /^[0-9][A-Z][0-9]{8}$/;
+
     if (!serialRegex.test(serial)) {
       error.value.nationalCardSerial =
-        'سریال کارت ملی باید ۶ تا ۱۰ کاراکتر و فقط شامل حروف و اعداد باشد.';
+        'فرمت صحیح سریال کارت ملی دارای یک حرف بزرگ انگلیسی و ۹ رقم است.';
       return false;
     }
 
@@ -109,8 +120,6 @@
 </script>
 
 <style scoped lang="scss">
-  @use '@/assets/design-system/input.scss' as *;
-
   .form-wrapper {
     margin-bottom: 80px;
     height: 100px;

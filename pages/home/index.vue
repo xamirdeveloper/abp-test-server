@@ -80,6 +80,13 @@
 
   import { useRouter } from 'vue-router';
 
+  interface TransactionItem {
+    title: string;
+    subtitle: string;
+    amount: number;
+    type: 'deposit' | 'withdraw';
+  }
+
   const router = useRouter();
 
   const selectedLabel = computed(() => {
@@ -107,7 +114,7 @@
     const base = 20000000 + Math.sin(i / 3) * 9000000;
     return Math.round(base);
   });
-  const transactions = ref([
+  const transactions = ref<TransactionItem[]>([
     {
       title: 'مینا نوروزی',
       subtitle: 'نیم ساعت پیش | ۱۲:۲۴',
@@ -136,12 +143,6 @@
 </script>
 
 <style scoped lang="scss">
-  .ap-page-wrapper {
-    overflow-y: auto;
-    scroll-behavior: smooth;
-    flex: 1;
-  }
-
   .ap-radius-14 {
     border-radius: 14px;
   }

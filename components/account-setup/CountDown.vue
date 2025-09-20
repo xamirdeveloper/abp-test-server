@@ -75,10 +75,14 @@
   };
 
   const handleResend = async () => {
+    if (resending.value) return;
     resending.value = true;
-    await emit('resend');
-    startCountdown();
-    resending.value = false;
+    try {
+      await emit('resend');
+      startCountdown();
+    } finally {
+      resending.value = false;
+    }
   };
 
   onMounted(() => {

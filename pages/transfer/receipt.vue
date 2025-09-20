@@ -1,6 +1,13 @@
 <template>
   <div class="ap-page-header d-flex justify-space-between ap-mb-30 pt-3">
-    <v-btn icon width="40" height="40" variant="text" class="ap-border-1 ap-border-accent-primary">
+    <v-btn
+      icon
+      width="40"
+      height="40"
+      variant="text"
+      class="ap-border-1 ap-border-accent-primary"
+      @click="router.replace('/transfer')"
+    >
       <icon-close width="22" height="22" />
     </v-btn>
     <v-btn icon width="40" height="40" variant="text" class="ap-border-1 ap-border-accent-primary">
@@ -123,6 +130,10 @@
 </template>
 
 <script lang="ts" setup>
+  import { useRouter } from 'vue-router';
+
+  const router = useRouter();
+
   const isSuccess = ref<boolean>(true);
 </script>
 

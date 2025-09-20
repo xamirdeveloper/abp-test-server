@@ -69,7 +69,6 @@
           status: ServiceStatus.Active,
           action: () => router.push('/services/foreign-travel-payment'),
         },
-        { id: 1, label: 'نقد کردن درآمد بین المللی', icon: IconGift, status: ServiceStatus.Active },
       ],
     },
     {
@@ -78,7 +77,6 @@
       color: '#D4F7D0',
       items: [
         { id: 4, label: 'خرید از سایت ها', icon: IconPayment, status: ServiceStatus.Active },
-        { id: 5, label: 'تعرفه های گمرکی', icon: IconPayment, status: ServiceStatus.Disabled },
         { id: 6, label: 'تعرفه های گمرکی', icon: IconPayment, status: ServiceStatus.Soon },
       ],
     },

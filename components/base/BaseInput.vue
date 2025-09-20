@@ -18,12 +18,14 @@
         :disabled="disabled"
         :readonly="readonly"
         :value="displayValue"
-        autocomplete="off"
+        :name="name"
+        :autocomplete="autocomplete"
         :maxlength="maxlength"
         @keypress="handleKeyPress"
         @focus="isFocused = true"
         @blur="isFocused = false"
         @input="handleInput"
+        @paste="handlePaste"
         class="ap-input__field ap-txt-placeholder"
       />
 
@@ -59,11 +61,10 @@
   const props = withDefaults(defineProps<BaseInputProps>(), {
     type: 'text',
     label: '',
-    placeholder: '',
-    id: '',
     disabled: false,
     error: '',
     clearable: false,
+    autocomplete: 'off',
   });
 
   const emit = defineEmits<{
@@ -110,6 +111,16 @@
       const char = e.key;
       if (!/[0-9۰-۹]/.test(char)) {
         e.preventDefault();
+      }
+    }
+  };
+
+  const handlePaste = (e: ClipboardEvent) => {
+    if (props.type === 'number') {
+      const pastedData = e.clipboardData?.getData('text') ?? '';
+      const sanitized = convertToEnglishDigits(pastedData).replace(/[^\d]/g, '');
+      if (sanitized !== pastedData) {
+        e.preventDefault(); // جلوگیری از paste غیرعددی
       }
     }
   };

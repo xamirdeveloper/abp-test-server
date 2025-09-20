@@ -29,7 +29,7 @@
           density="compact"
         />
       </div>
-      <profile-action-item title="خروج" :error="true">
+      <profile-action-item title="خروج" :error="true" @click="logout">
         <template #icon>
           <icon-error width="20" height="20" stroke="var(--ap-btn-error)" />
         </template>
@@ -48,7 +48,12 @@
       <span class="ap-txt-title-4">تغییر رمز عبور</span>
     </v-btn>
     <v-divider />
-    <v-btn variant="text" height="40" class="d-flex justify-start w-100 pa-1 mt-4 mb-5">
+    <v-btn
+      variant="text"
+      height="40"
+      class="d-flex justify-start w-100 pa-1 mt-4 mb-5"
+      @click="router.push('profile/change-username')"
+    >
       <icon-user-account width="24" height="24" class="me-2" />
       <span class="ap-txt-title-4">تغییر نام کاربری</span>
     </v-btn>
@@ -65,7 +70,7 @@
   definePageMeta({ layout: 'main' });
 
   import { useThemeStore } from '@/stores/theme';
-  import { useRouter } from 'vue-router';
+  import { useAuthStore } from '@/stores/auth';
   import IconAlert from '~/components/icons/IconAlert.vue';
   import IconSetting from '~/components/icons/IconSetting.vue';
   import IconSmallCaps from '~/components/icons/IconSmallCaps.vue';
@@ -82,6 +87,7 @@
 
   const router = useRouter();
   const themeStore = useThemeStore();
+  const authStore = useAuthStore();
 
   const isSettingsModalOpen = ref<boolean>(false);
   const isLanguagesModalOpen = ref<boolean>(false);
@@ -134,14 +140,15 @@
   function openLanguageModal() {
     isLanguagesModalOpen.value = true;
   }
+
+  function logout() {
+    authStore.logout();
+  }
 </script>
 
 <style scoped lang="scss">
   .ap-page-wrapper {
-    overflow-y: auto;
-    scroll-behavior: smooth;
     margin-bottom: 70px;
-    flex: 1;
   }
 
   .app-version {

@@ -13,15 +13,15 @@
       </v-btn>
     </template>
   </page-header>
+  <div class="d-flex justify-start align-center ga-2 mb-5 pb-2 chips-wrapper">
+    <v-chip v-for="i in 9" variant="text" class="ap-bg-surface py-2 ps-4 pe-2 chip-item">
+      <span class="ap-txt-12 ap-fw-semibold ap-text-error ap-me-10">دریافتی</span>
+      <v-btn variant="text" icon width="16" height="16">
+        <icon-close width="14" height="14" stroke="#FF4F4F" />
+      </v-btn>
+    </v-chip>
+  </div>
   <div class="ap-page-wrapper">
-    <div class="d-flex justify-start align-center ga-2 mb-5 pb-2 chips-wrapper">
-      <v-chip v-for="i in 9" variant="text" class="ap-bg-surface py-2 ps-4 pe-2 chip-item">
-        <span class="ap-txt-12 ap-fw-semibold ap-text-error ap-me-10">دریافتی</span>
-        <v-btn variant="text" icon width="16" height="16">
-          <icon-close width="14" height="14" stroke="#FF4F4F" />
-        </v-btn>
-      </v-chip>
-    </div>
     <div>
       <TransactionItem
         v-for="(item, index) in transactions"
@@ -142,13 +142,6 @@
 </script>
 
 <style scoped>
-  .ap-page-wrapper {
-    overflow-x: hidden;
-    overflow-y: auto;
-    scroll-behavior: smooth;
-    flex: 1;
-  }
-
   .ap-me-10 {
     margin-inline-end: 10px;
   }
@@ -165,6 +158,7 @@
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
     scrollbar-width: none;
+    padding-inline: 20px;
   }
 
   .chips-wrapper::-webkit-scrollbar {

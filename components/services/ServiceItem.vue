@@ -1,5 +1,11 @@
 <template>
-  <v-card variant="text" :class="[statusClass, 'item-card']" @click="handleClick">
+  <v-card
+    id="service-card"
+    variant="text"
+    :class="[statusClass, 'item-card']"
+    @click="handleClick"
+    :ripple="false"
+  >
     <v-btn
       variant="text"
       width="66"
@@ -90,5 +96,10 @@
   .disabled {
     opacity: 0.6;
     pointer-events: none;
+  }
+</style>
+<style>
+  #service-card .v-card__overlay {
+    opacity: 0 !important;
   }
 </style>

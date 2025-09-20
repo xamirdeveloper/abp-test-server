@@ -182,8 +182,6 @@
 
 <style scoped>
   .ap-page-wrapper {
-    overflow-y: auto;
-    flex: 1;
-    margin-bottom: 100px;
+    margin-bottom: 96px;
   }
 </style>

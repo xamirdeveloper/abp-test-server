@@ -7,7 +7,7 @@
         width="40"
         height="40"
         variant="text"
-        @click="router.push('transactions')"
+        @click="shareTransaction"
       >
         <icon-share width="20" height="20" />
       </v-btn>
@@ -91,6 +91,10 @@
     { value: 'food', label: 'خوراک' },
     { value: 'other_payments', label: 'سایر برداشت' },
   ]);
+
+  const shareTransaction = () => {
+    // should use share api or take screenshot and share it
+  };
 </script>
 
 <style scoped lang="scss">
