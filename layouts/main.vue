@@ -8,6 +8,12 @@
 </template>
 
 <script setup lang="ts">
+useHead({
+  link: [
+    { rel: 'manifest', href: '/manifest.json' }
+  ]
+})
+
   import { useApplyTheme } from '@/composables/useApplyTheme';
   import { type BottomNavItem } from '@/components/base/BaseBottomNav.vue';
   import IconCartOutline from '~/components/icons/IconCartOutline.vue';
