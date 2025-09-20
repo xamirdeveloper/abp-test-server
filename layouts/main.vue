@@ -14,6 +14,7 @@ useHead({
     { rel: 'apple-touch-icon', href: '/pwa-icons/pwa-icon-192x192.png' } // برای iOS
   ],
   meta: [
+    { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
     { name: 'mobile-web-app-capable', content: 'yes' },
     { name: 'apple-mobile-web-app-capable', content: 'yes' },
     { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
@@ -57,7 +58,7 @@ useHead({
 </script>
 <style scoped lang="scss">
   .main-wrapper {
-    height: 100dvh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
